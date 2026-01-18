@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=4 uid="uid://b6bfa00g5bnmo"]
+[gd_scene load_steps=7 format=4 uid="uid://b6bfa00g5bnmo"]
 
 [ext_resource type="Texture2D" uid="uid://bcvq2avq2nrsm" path="res://assets/Capture d'écran 2026-01-07 103014.png" id="1_df0lk"]
 [ext_resource type="Texture2D" uid="uid://daagron3orntd" path="res://assets/icon.svg" id="1_dojpo"]
 [ext_resource type="PackedScene" uid="uid://cjn72anju4yoq" path="res://scenes/player.tscn" id="2_1fpmp"]
+[ext_resource type="PackedScene" uid="uid://86r3dcro47u7" path="res://scenes/enemy.tscn" id="4_i6x8u"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i6x8u"]
 texture = ExtResource("1_df0lk")
@@ -303,3 +304,6 @@ position = Vector2(240, 135)
 texture = ExtResource("1_dojpo")
 
 [node name="player" parent="." instance=ExtResource("2_1fpmp")]
+
+[node name="enemy" parent="." instance=ExtResource("4_i6x8u")]
+position = Vector2(353, 124)
