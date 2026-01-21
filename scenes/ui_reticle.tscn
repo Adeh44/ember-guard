@@ -1,0 +1,48 @@
+[gd_scene load_steps=2 format=3 uid="uid://dqk13jbfta2sc"]
+
+[ext_resource type="Script" uid="uid://g6c7apetl4a1" path="res://scripts/ui_reticle.gd" id="1_ai30r"]
+
+[node name="ui_reticle" type="CanvasLayer"]
+script = ExtResource("1_ai30r")
+
+[node name="center_container" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="line_top" type="ColorRect" parent="center_container"]
+layout_mode = 0
+offset_left = -2.0
+offset_top = -30.0
+offset_right = 2.0
+offset_bottom = -10.0
+
+[node name="line_bottom" type="ColorRect" parent="center_container"]
+layout_mode = 0
+offset_left = -2.0
+offset_top = 10.0
+offset_right = 2.0
+offset_bottom = 30.0
+
+[node name="line_left" type="ColorRect" parent="center_container"]
+layout_mode = 0
+offset_left = -30.0
+offset_top = -2.0
+offset_right = -10.0
+offset_bottom = 2.0
+
+[node name="line_right" type="ColorRect" parent="center_container"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = -2.0
+offset_right = 30.0
+offset_bottom = 2.0
