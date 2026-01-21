@@ -7,7 +7,7 @@ var hitbox_attack_scene = preload("res://scenes/hitbox_attack.tscn")
 var speed = 150.0 # Vitesse de déplacement normale
 
 # États du joueur
-var attacking = false  # True si le joueur est en train d'attaquer (immobile)
+var attacking = false  # True si le joueur est en train d'attaquer (ralenti à 70%)
 var is_aiming = false  # True si le joueur vise (clic droit maintenu)
 
 # Système de visée
@@ -42,29 +42,23 @@ func _physics_process(_delta):
 			aim_time += _delta * 0.833  # Visée +20% plus lente (*0.833 = /1.2)
 		else:
 			# VISÉE IMMOBILE
-			attacking = true  # Bloque le mouvement
+			attacking = true  # Ralentit le mouvement
 			aim_time += _delta  # Visée à vitesse normale
 		
 		# Plafonner le temps de visée à 5 secondes max
 		aim_time = min(aim_time, max_aim_time)
 	else:
-			# Clic droit relâché = réinitialiser la visée
+		# Clic droit relâché = réinitialiser la visée
 		is_aiming = false
 		aim_time = 0.0
+		attacking = false
 		
-		# ========== RÉCUPÉRATION DU RECUL ==========
-	# Le recul diminue progressivement si on ne tire pas
-	if recoil_penalty > 0:
-		recoil_penalty -= recoil_recovery_rate * _delta
-		recoil_penalty = max(recoil_penalty, 0.0)  # Ne descend pas en dessous de 0
-	
 	# ========== MOUVEMENT ==========
-	# Le joueur peut bouger seulement s'il n'attaque pas (et n'est pas immobile en visée)
 	if not attacking:
 		# Récupérer les inputs de mouvement (ZQSD)
 		var direction = Vector2.ZERO
-		direction.x = Input.get_axis("left", "right")  # Q = -1, D = +1
-		direction.y = Input.get_axis("up", "down")  # Z = -1, S = +1
+		direction.x = Input.get_axis("left", "right")
+		direction.y = Input.get_axis("up", "down")
 		
 		# Normaliser pour éviter mouvement diagonal plus rapide
 		if direction != Vector2.ZERO:
@@ -73,12 +67,13 @@ func _physics_process(_delta):
 		# Calculer la vitesse actuelle
 		var current_speed = speed
 		if is_aiming:
-			current_speed = speed / 3
-		elif attacking:
-			current_speed = speed * 0.7  # 70% vitesse pendant attaque
+			current_speed = speed / 3  # Visée en mouvement = lent
 		
-		# Appliquer la vitesse au vecteur de mouvement
+		# Appliquer la vitesse
 		velocity = direction * current_speed
+	else:
+		# Visée immobile = bloqué
+		velocity = Vector2.ZERO
 
 	# Déplacer le joueur (gère les collisions automatiquement)
 	move_and_slide()
@@ -121,9 +116,10 @@ func attack(direction):
 	recoil_penalty += recoil_per_shot
 	recoil_penalty = min(recoil_penalty, 0.5)
 	
-	# Ralentir (pas bloquer) pendant attaque
+	# Ralentir pendant attaque (70% vitesse)
 	attacking = true
 	can_attack = false
+	
 	# Créer hitbox
 	var hitbox = hitbox_attack_scene.instantiate()
 	hitbox.position = direction * 30  # Position RELATIVE (pas global_position)
@@ -135,7 +131,7 @@ func attack(direction):
 	# Disparaît plus vite
 	await get_tree().create_timer(0.2).timeout
 	attacking = false
-	hitbox.queue_free()  #fait disparaître la hitbox
+	hitbox.queue_free()  # Fait disparaître la hitbox
 	
 	await get_tree().create_timer(attack_cooldown).timeout
 	can_attack = true
