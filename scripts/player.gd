@@ -23,6 +23,9 @@ var recoil_recovery_rate = 0.15  # Récupération 15%/seconde
 var can_attack = true
 var attack_cooldown = 0.3  # Secondes entre chaque attaque
 
+# Référence à l'AnimationPlayer
+@onready var anim_player = $anim_player
+
 func _physics_process(_delta):
 	
 	# ========== SYSTÈME DE VISÉE ==========
@@ -78,6 +81,12 @@ func _physics_process(_delta):
 	# Déplacer le joueur (gère les collisions automatiquement)
 	move_and_slide()
 	
+	# Animation selon mouvement
+	if velocity.length() > 0:
+		anim_player.play("walk")
+	else:
+		anim_player.stop()
+		
 	# ========== TIR ==========
 	# Tir déclenché au clic GAUCHE
 	if Input.is_action_just_pressed("atq") and can_attack:

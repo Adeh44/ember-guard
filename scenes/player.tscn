@@ -1,21 +1,66 @@
-[gd_scene load_steps=5 format=3 uid="uid://cjn72anju4yoq"]
+[gd_scene load_steps=8 format=3 uid="uid://cjn72anju4yoq"]
 
 [ext_resource type="Script" uid="uid://y5a17v5jc3sf" path="res://scripts/player.gd" id="1_g2els"]
-[ext_resource type="Texture2D" uid="uid://daagron3orntd" path="res://assets/icon.svg" id="2_qhqgy"]
+[ext_resource type="Texture2D" uid="uid://yyemwafs3h00" path="res://assets/walk.png" id="2_qhqgy"]
 [ext_resource type="Script" uid="uid://b408dri6r3v61" path="res://scripts/camera_2d.gd" id="3_qhqgy"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dqkch"]
 radius = 16.0
 
+[sub_resource type="Animation" id="Animation_dqkch"]
+resource_name = "walk"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="Animation" id="Animation_qlg0r"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tuyoq"]
+_data = {
+&"RESET": SubResource("Animation_qlg0r"),
+&"walk": SubResource("Animation_dqkch")
+}
+
 [node name="player" type="CharacterBody2D" groups=["player"]]
 script = ExtResource("1_g2els")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.25, 0.25)
+scale = Vector2(2, 2)
 texture = ExtResource("2_qhqgy")
+hframes = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_dqkch")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("3_qhqgy")
+
+[node name="anim_player" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Sprite2D")
+libraries = {
+&"": SubResource("AnimationLibrary_tuyoq")
+}
