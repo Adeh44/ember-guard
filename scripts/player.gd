@@ -37,65 +37,60 @@ func _ready():
 	poids_total = 30.0 # simule 30kg dans le sac du joueur
 
 func _physics_process(_delta):
-	
-	# ========== SYSTÈME DE VISÉE ==========
-	# Détecte si le joueur maintient le clic droit
+		
+		# ========== SYSTÈME DE VISÉE ==========
 	if Input.is_action_pressed("aim"):
 		is_aiming = true
 		
-		# Vérifier si le joueur essaie de bouger pendant la visée
+		# Vérifier si le joueur bouge PENDANT la visée
 		var direction_input = Vector2.ZERO
 		direction_input.x = Input.get_axis("left", "right")
 		direction_input.y = Input.get_axis("up", "down")
-		var is_moving = direction_input.length() > 0  # True si input mouvement
+		var is_moving = direction_input.length() > 0
 		
 		if is_moving:
-			# VISÉE EN MOUVEMENT
-			attacking = false  # Permet de bouger (ralenti)
-			aim_time += _delta * 0.833  # Visée +20% plus lente (*0.833 = /1.2)
+			# Visée en mouvement : plus lent
+			aim_time += _delta * 0.5
 		else:
-			# VISÉE IMMOBILE
-			attacking = true  # Ralentit le mouvement
-			aim_time += _delta  # Visée à vitesse normale
+			# Visée immobile : vitesse normale
+			aim_time += _delta
 		
-		# Plafonner le temps de visée à 5 secondes max
 		aim_time = min(aim_time, max_aim_time)
 	else:
-		# Clic droit relâché = réinitialiser la visée
 		is_aiming = false
 		aim_time = 0.0
-		attacking = false
 		
 	# ========== MOUVEMENT ==========
-	if not attacking:
-		# Récupérer les inputs de mouvement (ZQSD)
-		var direction = Vector2.ZERO
-		direction.x = Input.get_axis("left", "right")
-		direction.y = Input.get_axis("up", "down")
-		
-		# Normaliser pour éviter mouvement diagonal plus rapide
-		if direction != Vector2.ZERO:
-			direction = direction.normalized()
-		
-		# Calculer la vitesse actuelle
-		# Calculer vitesse avec pénalité de poids
-		var poids_ratio = poids_total / poids_max  # 0.0 à 1.0+
-		var current_speed = speed * (1.0 - poids_ratio)  # Speed réduit si lourd
-		current_speed = max(current_speed, speed * 0.3)  # Minimum 30% vitesse
-		
-		# Calculer stealth avec pénalité de poids
-		current_stealth = base_stealth - (poids_total * 2)  # -2 stealth par kg
-		current_stealth = max(current_stealth, 0)  # Minimum 0
-
-		if is_aiming:
-			current_speed = speed / 3  # Visée en mouvement = lent
-		
-		# Appliquer la vitesse
-		velocity = direction * current_speed
-	else:
-		# Visée immobile = bloqué
-		velocity = Vector2.ZERO
-
+	var direction = Vector2.ZERO
+	direction.x = Input.get_axis("left", "right")
+	direction.y = Input.get_axis("up", "down")
+	
+	if direction != Vector2.ZERO:
+		direction = direction.normalized()
+	
+	# Calculer vitesse avec pénalité de poids
+	var poids_ratio = poids_total / poids_max
+	var current_speed = speed * (1.0 - poids_ratio)
+	current_speed = max(current_speed, speed * 0.3)
+	
+	# PRIORITÉ 1 : Visée (réduit vitesse drastiquement)
+	if is_aiming:
+		if direction.length() > 0:
+			# Vise en bougeant = très lent
+			current_speed = current_speed * 0.3
+		else:
+			# Vise immobile = bloqué
+			current_speed = 0
+	# PRIORITÉ 2 : Attaque en cours (CàC)
+	elif attacking:
+		current_speed = 0
+	
+	velocity = direction * current_speed
+	
+	# Calculer stealth avec pénalité de poids
+	current_stealth = base_stealth - (poids_total * 2)
+	current_stealth = max(current_stealth, 0)
+	
 	# Déplacer le joueur (gère les collisions automatiquement)
 	move_and_slide()
 	
