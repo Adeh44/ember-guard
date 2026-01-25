@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=4 uid="uid://b6bfa00g5bnmo"]
+[gd_scene load_steps=9 format=4 uid="uid://b6bfa00g5bnmo"]
 
 [ext_resource type="Texture2D" uid="uid://bcvq2avq2nrsm" path="res://assets/Capture d'écran 2026-01-07 103014.png" id="1_df0lk"]
 [ext_resource type="Texture2D" uid="uid://daagron3orntd" path="res://assets/icon.svg" id="1_dojpo"]
 [ext_resource type="PackedScene" uid="uid://cjn72anju4yoq" path="res://scenes/player.tscn" id="2_1fpmp"]
 [ext_resource type="PackedScene" uid="uid://86r3dcro47u7" path="res://scenes/enemy.tscn" id="4_i6x8u"]
 [ext_resource type="PackedScene" uid="uid://dqk13jbfta2sc" path="res://scenes/ui_reticle.tscn" id="5_8xg12"]
+[ext_resource type="PackedScene" uid="uid://qisj5v7fmsm1" path="res://scenes/ui_weight.tscn" id="6_5n3yh"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i6x8u"]
 texture = ExtResource("1_df0lk")
@@ -319,3 +320,5 @@ position = Vector2(422, 35)
 position = Vector2(184, 225)
 
 [node name="ui_reticle" parent="." instance=ExtResource("5_8xg12")]
+
+[node name="ui_weight" parent="." instance=ExtResource("6_5n3yh")]

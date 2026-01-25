@@ -26,6 +26,16 @@ var attack_cooldown = 0.3  # Secondes entre chaque attaque
 # Référence à l'AnimationPlayer
 @onready var anim_player = $anim_player
 
+# Système de poids
+var poids_total = 0.0  # Poids actuel du joueur (kg)
+var poids_max = 100.0  # Poids maximum avant pénalité totale
+var base_stealth = 100  # Niveau de discrétion de base
+var current_stealth = 100 # Stealth actuelle (modifiée par poids)
+
+func _ready():
+	# Test : ajout de poids temporaire
+	poids_total = 30.0 # simule 30kg dans le sac du joueur
+
 func _physics_process(_delta):
 	
 	# ========== SYSTÈME DE VISÉE ==========
@@ -68,7 +78,15 @@ func _physics_process(_delta):
 			direction = direction.normalized()
 		
 		# Calculer la vitesse actuelle
-		var current_speed = speed
+		# Calculer vitesse avec pénalité de poids
+		var poids_ratio = poids_total / poids_max  # 0.0 à 1.0+
+		var current_speed = speed * (1.0 - poids_ratio)  # Speed réduit si lourd
+		current_speed = max(current_speed, speed * 0.3)  # Minimum 30% vitesse
+		
+		# Calculer stealth avec pénalité de poids
+		current_stealth = base_stealth - (poids_total * 2)  # -2 stealth par kg
+		current_stealth = max(current_stealth, 0)  # Minimum 0
+
 		if is_aiming:
 			current_speed = speed / 3  # Visée en mouvement = lent
 		

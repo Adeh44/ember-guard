@@ -5,8 +5,9 @@ var crit_chance = 0.05  # Par défaut 5% si non défini
 var damage = 10  # Dégâts de base
 
 func _ready():
-	body_entered.connect(_on_body_entered)
-
+	# Connecter seulement si pas déjà connecté
+	if not body_entered.is_connected(_on_body_entered):
+		body_entered.connect(_on_body_entered)
 # Fonction appelée quand la hitbox touche quelque chose
 func _on_body_entered(body):
 	print("Quelque chose touché : ", body.name)
