@@ -1,11 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://cjn72anju4yoq"]
+[gd_scene load_steps=9 format=3 uid="uid://cjn72anju4yoq"]
 
 [ext_resource type="Script" uid="uid://y5a17v5jc3sf" path="res://scripts/player.gd" id="1_g2els"]
 [ext_resource type="Texture2D" uid="uid://yyemwafs3h00" path="res://assets/walk.png" id="2_qhqgy"]
 [ext_resource type="Script" uid="uid://b408dri6r3v61" path="res://scripts/camera_2d.gd" id="3_qhqgy"]
+[ext_resource type="PackedScene" uid="uid://cqx2j1nmga50t" path="res://scenes/weapon_pistol.tscn" id="4_dqkch"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dqkch"]
-radius = 12.0
+radius = 11.0
 
 [sub_resource type="Animation" id="Animation_qlg0r"]
 length = 0.001
@@ -50,7 +51,7 @@ script = ExtResource("1_g2els")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(1, 0)
-scale = Vector2(2, 2)
+scale = Vector2(2.5, 2.5)
 texture = ExtResource("2_qhqgy")
 hframes = 4
 
@@ -65,3 +66,7 @@ root_node = NodePath("../Sprite2D")
 libraries = {
 &"": SubResource("AnimationLibrary_tuyoq")
 }
+
+[node name="weapon_pistol" parent="." instance=ExtResource("4_dqkch")]
+position = Vector2(10, 0)
+scale = Vector2(0.6, 0.6)

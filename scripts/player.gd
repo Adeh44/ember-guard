@@ -25,6 +25,7 @@ var attack_cooldown = 0.3  # Secondes entre chaque attaque
 
 # Référence à l'AnimationPlayer
 @onready var anim_player = $anim_player
+@onready var weapon = $weapon_pistol  # Référence à l'arme
 
 # Système de poids
 var poids_total = 0.0  # Poids actuel du joueur (kg)
@@ -33,8 +34,12 @@ var base_stealth = 100  # Niveau de discrétion de base
 var current_stealth = 100 # Stealth actuelle (modifiée par poids)
 
 func _ready():
-	# Test : ajout de poids temporaire
-	poids_total = 30.0 # simule 30kg dans le sac du joueur
+	# Ajouter le poids de l'arme au poids total
+	if weapon != null:
+		poids_total += weapon.weight
+	
+	# Test : ajout poids supplémentaire (sac, équipement)
+	poids_total += 30.0
 
 func _physics_process(_delta):
 		
@@ -83,7 +88,7 @@ func _physics_process(_delta):
 			current_speed = 0
 	# PRIORITÉ 2 : Attaque en cours (CàC)
 	elif attacking:
-		current_speed = 0
+		current_speed = current_speed * 0.7  # Ralentir à 70%, pas bloquer
 	
 	velocity = direction * current_speed
 	
