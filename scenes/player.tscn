@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cqx2j1nmga50t" path="res://scenes/weapon_pistol.tscn" id="4_dqkch"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dqkch"]
-radius = 11.0
+radius = 13.0
 
 [sub_resource type="Animation" id="Animation_qlg0r"]
 length = 0.001
@@ -47,11 +47,12 @@ _data = {
 }
 
 [node name="player" type="CharacterBody2D" groups=["player"]]
+scale = Vector2(4, 4)
 script = ExtResource("1_g2els")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(1, 0)
-scale = Vector2(2.5, 2.5)
+scale = Vector2(2, 2)
 texture = ExtResource("2_qhqgy")
 hframes = 4
 
@@ -68,5 +69,5 @@ libraries = {
 }
 
 [node name="weapon_pistol" parent="." instance=ExtResource("4_dqkch")]
-position = Vector2(10, 0)
-scale = Vector2(0.6, 0.6)
+position = Vector2(7, 0)
+scale = Vector2(0.4, 0.4)
