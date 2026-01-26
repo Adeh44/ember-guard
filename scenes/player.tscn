@@ -1,9 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://cjn72anju4yoq"]
+[gd_scene load_steps=11 format=3 uid="uid://cjn72anju4yoq"]
 
 [ext_resource type="Script" uid="uid://y5a17v5jc3sf" path="res://scripts/player.gd" id="1_g2els"]
 [ext_resource type="Texture2D" uid="uid://yyemwafs3h00" path="res://assets/walk.png" id="2_qhqgy"]
 [ext_resource type="Script" uid="uid://b408dri6r3v61" path="res://scripts/camera_2d.gd" id="3_qhqgy"]
 [ext_resource type="PackedScene" uid="uid://cqx2j1nmga50t" path="res://scenes/weapon_pistol.tscn" id="4_dqkch"]
+[ext_resource type="Texture2D" uid="uid://cp6mh4ojni7wl" path="res://assets/helmet_base.png" id="5_qlg0r"]
+[ext_resource type="Texture2D" uid="uid://c1b684l8xyhrj" path="res://assets/vest_base.png" id="6_tuyoq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dqkch"]
 radius = 13.0
@@ -57,6 +59,7 @@ texture = ExtResource("2_qhqgy")
 hframes = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, -1.25)
 shape = SubResource("CircleShape2D_dqkch")
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -71,3 +74,13 @@ libraries = {
 [node name="weapon_pistol" parent="." instance=ExtResource("4_dqkch")]
 position = Vector2(7, 0)
 scale = Vector2(0.4, 0.4)
+
+[node name="helmet_base" type="Sprite2D" parent="."]
+position = Vector2(0, -10)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("5_qlg0r")
+
+[node name="vest_sprite" type="Sprite2D" parent="."]
+position = Vector2(0, 1)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("6_tuyoq")

@@ -32,6 +32,10 @@ var poids_total = 0.0  # Poids actuel du joueur (kg)
 var poids_max = 100.0  # Poids maximum avant pénalité totale
 var base_stealth = 100  # Niveau de discrétion de base
 var current_stealth = 100 # Stealth actuelle (modifiée par poids)
+# Système HP et armor
+var max_hp = 100
+var current_hp = 100
+var armor = 0  # Réduit dégâts reçus
 
 func _ready():
 	# Ajouter le poids de l'arme au poids total
@@ -41,6 +45,28 @@ func _ready():
 	# Test : ajout poids supplémentaire (sac, équipement)
 	poids_total += 30.0
 
+# TEST : Équiper casque et gilet
+	armor += 15  # Casque
+	poids_total += 2.0
+	armor += 25  # Gilet
+	poids_total += 4.0
+	
+	print("Équipement : Armor total = ", armor, " | Poids total = ", poids_total, "kg")
+	
+func take_damage(amount):
+	# Réduction par armor (1 armor = -1% dégâts)
+	var damage_reduction = armor / 100.0
+	var actual_damage = amount * (1.0 - damage_reduction)
+	
+	current_hp -= actual_damage
+	current_hp = max(current_hp, 0)
+	
+	print("Joueur touché ! -", actual_damage, " HP (armor: ", armor, ") | HP: ", current_hp, "/", max_hp)
+	
+	if current_hp <= 0:
+		print("GAME OVER")
+		
+		
 func _physics_process(_delta):
 		
 		# ========== SYSTÈME DE VISÉE ==========

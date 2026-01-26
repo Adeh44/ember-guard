@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cymkf4gj55xyh"]
+
+[ext_resource type="Script" uid="uid://dgpqums2uvxn3" path="res://scripts/helmet_base.gd" id="1_mnd8r"]
+
+[node name="helmet_base" type="Node2D"]
+script = ExtResource("1_mnd8r")
