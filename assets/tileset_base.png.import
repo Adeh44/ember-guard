@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cp6mh4ojni7wl"
-path="res://.godot/imported/helmet_base.png-2472af0bb68ee1a67825707e316ab8da.ctex"
+uid="uid://5sduogbvyp44"
+path="res://.godot/imported/tileset_base.png-efbe1fe2e89fe2573768f61b80faecb4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/helmet_base.png"
-dest_files=["res://.godot/imported/helmet_base.png-2472af0bb68ee1a67825707e316ab8da.ctex"]
+source_file="res://assets/tileset_base.png"
+dest_files=["res://.godot/imported/tileset_base.png-efbe1fe2e89fe2573768f61b80faecb4.ctex"]
 
 [params]
 

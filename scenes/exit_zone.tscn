@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://baqm58jsh8n6j"]
+
+[ext_resource type="Script" uid="uid://enw47cbfv8a8" path="res://scripts/exit_zone.gd" id="1_2n2ks"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xvvcp"]
+size = Vector2(60, 20)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hh5oj"]
+load_path = "res://.godot/imported/icon.svg-56083ea2a1f1a4f1e49773bdc6d7826c.ctex"
+
+[node name="exit_zone" type="Area2D" unique_id=489145668]
+script = ExtResource("1_2n2ks")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1070375328]
+position = Vector2(80, 25)
+shape = SubResource("RectangleShape2D_xvvcp")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=646346437]
+modulate = Color(0.225395, 0.64829206, 0.27481756, 1)
+position = Vector2(80, 20)
+scale = Vector2(0.2, 0.2)
+texture = SubResource("CompressedTexture2D_hh5oj")

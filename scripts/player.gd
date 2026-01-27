@@ -53,7 +53,7 @@ func _ready():
 	
 	print("Équipement : Armor total = ", armor, " | Poids total = ", poids_total, "kg")
 	
-func take_damage(amount):
+func take_damage(amount, is_critical = false):
 	# Réduction par armor (1 armor = -1% dégâts)
 	var damage_reduction = armor / 100.0
 	var actual_damage = amount * (1.0 - damage_reduction)
@@ -73,6 +73,11 @@ func _physics_process(_delta):
 	if Input.is_action_pressed("aim"):
 		is_aiming = true
 		
+		# Récupération recul PENDANT la visée
+		if recoil_penalty > 0:
+			recoil_penalty -= recoil_recovery_rate * _delta * 0.5  # Plus lent pendant visée
+			recoil_penalty = max(recoil_penalty, 0.0)
+		
 		# Vérifier si le joueur bouge PENDANT la visée
 		var direction_input = Vector2.ZERO
 		direction_input.x = Input.get_axis("left", "right")
@@ -80,16 +85,19 @@ func _physics_process(_delta):
 		var is_moving = direction_input.length() > 0
 		
 		if is_moving:
-			# Visée en mouvement : plus lent
 			aim_time += _delta * 0.5
 		else:
-			# Visée immobile : vitesse normale
 			aim_time += _delta
 		
 		aim_time = min(aim_time, max_aim_time)
 	else:
 		is_aiming = false
 		aim_time = 0.0
+		
+		# Récupération recul (quand on ne vise pas)
+		if recoil_penalty > 0:
+			recoil_penalty -= recoil_recovery_rate * _delta
+			recoil_penalty = max(recoil_penalty, 0.0)
 		
 	# ========== MOUVEMENT ==========
 	var direction = Vector2.ZERO

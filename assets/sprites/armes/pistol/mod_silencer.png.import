@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dx5ratsrykyfq"
-path="res://.godot/imported/weapon_pistol.png-b267a6d4d9e35816d25b5950e495385c.ctex"
+uid="uid://bcuv6l3isjpki"
+path="res://.godot/imported/mod_silencer.png-080bce178f555a81d47acb0dd5b981c7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/weapon_pistol.png"
-dest_files=["res://.godot/imported/weapon_pistol.png-b267a6d4d9e35816d25b5950e495385c.ctex"]
+source_file="res://assets/sprites/armes/pistol/mod_silencer.png"
+dest_files=["res://.godot/imported/mod_silencer.png-080bce178f555a81d47acb0dd5b981c7.ctex"]
 
 [params]
 

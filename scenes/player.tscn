@@ -1,11 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://cjn72anju4yoq"]
+[gd_scene format=3 uid="uid://cjn72anju4yoq"]
 
 [ext_resource type="Script" uid="uid://y5a17v5jc3sf" path="res://scripts/player.gd" id="1_g2els"]
 [ext_resource type="Texture2D" uid="uid://yyemwafs3h00" path="res://assets/walk.png" id="2_qhqgy"]
 [ext_resource type="Script" uid="uid://b408dri6r3v61" path="res://scripts/camera_2d.gd" id="3_qhqgy"]
 [ext_resource type="PackedScene" uid="uid://cqx2j1nmga50t" path="res://scenes/weapon_pistol.tscn" id="4_dqkch"]
-[ext_resource type="Texture2D" uid="uid://cp6mh4ojni7wl" path="res://assets/helmet_base.png" id="5_qlg0r"]
-[ext_resource type="Texture2D" uid="uid://c1b684l8xyhrj" path="res://assets/vest_base.png" id="6_tuyoq"]
+[ext_resource type="Texture2D" uid="uid://cp6mh4ojni7wl" path="res://assets/sprites/gear/helmet/helmet_base.png" id="5_qlg0r"]
+[ext_resource type="Texture2D" uid="uid://c1b684l8xyhrj" path="res://assets/sprites/gear/vest/vest_base.png" id="6_tuyoq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dqkch"]
 radius = 13.0
@@ -48,39 +48,37 @@ _data = {
 &"walk": SubResource("Animation_dqkch")
 }
 
-[node name="player" type="CharacterBody2D" groups=["player"]]
+[node name="player" type="CharacterBody2D" unique_id=625649310 groups=["player"]]
 scale = Vector2(4, 4)
 script = ExtResource("1_g2els")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1051955346]
 position = Vector2(1, 0)
 scale = Vector2(2, 2)
 texture = ExtResource("2_qhqgy")
 hframes = 4
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=156218050]
 position = Vector2(0.5, -1.25)
 shape = SubResource("CircleShape2D_dqkch")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1298079975]
 script = ExtResource("3_qhqgy")
 
-[node name="anim_player" type="AnimationPlayer" parent="."]
+[node name="anim_player" type="AnimationPlayer" parent="." unique_id=649131349]
 root_node = NodePath("../Sprite2D")
-libraries = {
-&"": SubResource("AnimationLibrary_tuyoq")
-}
+libraries/ = SubResource("AnimationLibrary_tuyoq")
 
-[node name="weapon_pistol" parent="." instance=ExtResource("4_dqkch")]
+[node name="weapon_pistol" parent="." unique_id=1343296360 instance=ExtResource("4_dqkch")]
 position = Vector2(7, 0)
 scale = Vector2(0.4, 0.4)
 
-[node name="helmet_base" type="Sprite2D" parent="."]
+[node name="helmet_base" type="Sprite2D" parent="." unique_id=1311166833]
 position = Vector2(0, -10)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("5_qlg0r")
 
-[node name="vest_sprite" type="Sprite2D" parent="."]
+[node name="vest_sprite" type="Sprite2D" parent="." unique_id=1180716803]
 position = Vector2(0, 1)
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("6_tuyoq")

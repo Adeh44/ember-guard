@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dx7djbbg2a8rw"
-path="res://.godot/imported/mod_reflex.png-3cfed1fc9d359eebb9324b60f85d1e16.ctex"
+path="res://.godot/imported/mod_reflex.png-0b293aee7f2609d31ed1690f7548411f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/mod_reflex.png"
-dest_files=["res://.godot/imported/mod_reflex.png-3cfed1fc9d359eebb9324b60f85d1e16.ctex"]
+source_file="res://assets/sprites/armes/pistol/mod_reflex.png"
+dest_files=["res://.godot/imported/mod_reflex.png-0b293aee7f2609d31ed1690f7548411f.ctex"]
 
 [params]
 

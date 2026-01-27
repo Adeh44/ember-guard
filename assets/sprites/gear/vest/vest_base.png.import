@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bcuv6l3isjpki"
-path="res://.godot/imported/mod_silencer.png-9c7c267ea8fe7aad57483d26bd2e234c.ctex"
+uid="uid://c1b684l8xyhrj"
+path="res://.godot/imported/vest_base.png-c8e2a1b70ffd15d8143e4c9563a208ed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/mod_silencer.png"
-dest_files=["res://.godot/imported/mod_silencer.png-9c7c267ea8fe7aad57483d26bd2e234c.ctex"]
+source_file="res://assets/sprites/gear/vest/vest_base.png"
+dest_files=["res://.godot/imported/vest_base.png-c8e2a1b70ffd15d8143e4c9563a208ed.ctex"]
 
 [params]
 
