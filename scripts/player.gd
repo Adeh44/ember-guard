@@ -53,7 +53,7 @@ func _ready():
 	
 	print("Équipement : Armor total = ", armor, " | Poids total = ", poids_total, "kg")
 	
-func take_damage(amount, is_critical = false):
+func take_damage(amount, _is_critical = false):
 	# Réduction par armor (1 armor = -1% dégâts)
 	var damage_reduction = armor / 100.0
 	var actual_damage = amount * (1.0 - damage_reduction)

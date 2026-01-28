@@ -1,12 +1,12 @@
 [gd_scene load_steps=10 format=4 uid="uid://b6bfa00g5bnmo"]
 
 [ext_resource type="Texture2D" uid="uid://bcvq2avq2nrsm" path="res://assets/Capture d'écran 2026-01-07 103014.png" id="1_df0lk"]
+[ext_resource type="Texture2D" uid="uid://daagron3orntd" path="res://assets/icon.svg" id="1_dojpo"]
 [ext_resource type="PackedScene" uid="uid://cjn72anju4yoq" path="res://scenes/player.tscn" id="2_1fpmp"]
 [ext_resource type="PackedScene" uid="uid://86r3dcro47u7" path="res://scenes/enemy.tscn" id="4_i6x8u"]
 [ext_resource type="PackedScene" uid="uid://dqk13jbfta2sc" path="res://scenes/ui_reticle.tscn" id="5_8xg12"]
 [ext_resource type="PackedScene" uid="uid://qisj5v7fmsm1" path="res://scenes/ui_weight.tscn" id="6_5n3yh"]
 [ext_resource type="PackedScene" uid="uid://brqi4v1oecbdy" path="res://scenes/loot_container.tscn" id="7_0n17k"]
-[ext_resource type="PackedScene" uid="uid://dk4t6hhuet2kd" path="res://scenes/exit_zone.tscn" id="7_g3y3g"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i6x8u"]
 texture = ExtResource("1_df0lk")
@@ -302,11 +302,14 @@ tile_set = SubResource("TileSet_8xg12")
 
 [node name="TileMapLayerObstacles" type="TileMapLayer" parent="."]
 
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(240, 135)
+texture = ExtResource("1_dojpo")
+
 [node name="player" parent="." instance=ExtResource("2_1fpmp")]
-position = Vector2(243, 140)
 
 [node name="enemy" parent="." instance=ExtResource("4_i6x8u")]
-position = Vector2(403, 202)
+position = Vector2(353, 124)
 
 [node name="enemy2" parent="." instance=ExtResource("4_i6x8u")]
 position = Vector2(327, 229)
@@ -323,8 +326,3 @@ position = Vector2(184, 225)
 
 [node name="loot_container" parent="." instance=ExtResource("7_0n17k")]
 position = Vector2(140, 82)
-
-[node name="exit_zone" parent="." instance=ExtResource("7_g3y3g")]
-modulate = Color(0, 0.4255466, 0.79141927, 1)
-position = Vector2(422, 89)
-target_scene = "res://scenes/base.tscn"
