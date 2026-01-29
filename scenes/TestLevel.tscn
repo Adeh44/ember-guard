@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://qisj5v7fmsm1" path="res://scenes/ui_weight.tscn" id="6_5n3yh"]
 [ext_resource type="PackedScene" uid="uid://brqi4v1oecbdy" path="res://scenes/loot_container.tscn" id="7_0n17k"]
 [ext_resource type="PackedScene" uid="uid://dk4t6hhuet2kd" path="res://scenes/exit_zone.tscn" id="7_g3y3g"]
+[ext_resource type="PackedScene" uid="uid://besyio3hluxdh" path="res://scenes/waypoint.tscn" id="8_g3y3g"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0n17k"]
 texture = ExtResource("1_0n17k")
@@ -43,7 +44,7 @@ tile_map_data = PackedByteArray("AAAAAAAAAAACAAAAAAABAAAAAAADAAAAAAAAAAEAAAACAAA
 tile_set = SubResource("TileSet_5ycvo")
 
 [node name="player" parent="." unique_id=125559712 instance=ExtResource("2_1fpmp")]
-position = Vector2(243, 140)
+position = Vector2(243, 134)
 
 [node name="enemy" parent="." unique_id=476236003 instance=ExtResource("4_i6x8u")]
 position = Vector2(403, 202)
@@ -68,3 +69,14 @@ position = Vector2(140, 82)
 modulate = Color(0, 0.4255466, 0.79141927, 1)
 position = Vector2(422, 89)
 target_scene = "res://scenes/base.tscn"
+
+[node name="waypointgroup" type="Node2D" parent="." unique_id=1250303231 groups=["waypoints"]]
+
+[node name="waypoint" parent="waypointgroup" unique_id=1569147108 instance=ExtResource("8_g3y3g")]
+position = Vector2(100, 100)
+
+[node name="waypoint2" parent="waypointgroup" unique_id=1010730254 instance=ExtResource("8_g3y3g")]
+position = Vector2(102, 210)
+
+[node name="waypoint3" parent="waypointgroup" unique_id=1115605821 instance=ExtResource("8_g3y3g")]
+position = Vector2(357, 45)
