@@ -47,10 +47,10 @@ tile_set = SubResource("TileSet_5ycvo")
 position = Vector2(243, 134)
 
 [node name="enemy" parent="." unique_id=476236003 instance=ExtResource("4_i6x8u")]
-position = Vector2(81, 132)
+position = Vector2(403, 202)
 
 [node name="enemy2" parent="." unique_id=1869935895 instance=ExtResource("4_i6x8u")]
-position = Vector2(92, 50)
+position = Vector2(327, 229)
 
 [node name="enemy3" parent="." unique_id=1821416048 instance=ExtResource("4_i6x8u")]
 position = Vector2(422, 35)
@@ -70,13 +70,13 @@ modulate = Color(0, 0.4255466, 0.79141927, 1)
 position = Vector2(422, 89)
 target_scene = "res://scenes/base.tscn"
 
-[node name="waypointgroup" type="Node2D" parent="." unique_id=1250303231 groups=["waypoints"]]
+[node name="waypoint_group" type="Node2D" parent="." unique_id=1250303231 groups=["waypoints"]]
 
-[node name="waypoint" parent="waypointgroup" unique_id=1569147108 instance=ExtResource("8_g3y3g")]
+[node name="waypoint" parent="waypoint_group" unique_id=1569147108 instance=ExtResource("8_g3y3g")]
 position = Vector2(100, 100)
 
-[node name="waypoint2" parent="waypointgroup" unique_id=1010730254 instance=ExtResource("8_g3y3g")]
+[node name="waypoint2" parent="waypoint_group" unique_id=1010730254 instance=ExtResource("8_g3y3g")]
 position = Vector2(102, 210)
 
-[node name="waypoint3" parent="waypointgroup" unique_id=1115605821 instance=ExtResource("8_g3y3g")]
+[node name="waypoint3" parent="waypoint_group" unique_id=1115605821 instance=ExtResource("8_g3y3g")]
 position = Vector2(357, 45)

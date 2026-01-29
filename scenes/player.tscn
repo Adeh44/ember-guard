@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cjn72anju4yoq"]
+[gd_scene format=3 uid="uid://cjn72anju4yoq"]
 
 [ext_resource type="Script" uid="uid://y5a17v5jc3sf" path="res://scripts/player.gd" id="1_g2els"]
 [ext_resource type="Texture2D" uid="uid://yyemwafs3h00" path="res://assets/walk.png" id="2_qhqgy"]
@@ -9,6 +9,21 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dqkch"]
 radius = 13.0
+
+[sub_resource type="Animation" id="Animation_fjrip"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
 
 [sub_resource type="Animation" id="Animation_tuyoq"]
 resource_name = "walk"
@@ -27,60 +42,44 @@ tracks/0/keys = {
 "values": [0, 1]
 }
 
-[sub_resource type="Animation" id="Animation_fjrip"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_smehm"]
 _data = {
 &"RESET": SubResource("Animation_fjrip"),
 &"walk": SubResource("Animation_tuyoq")
 }
 
-[node name="player" type="CharacterBody2D" groups=["player"]]
-scale = Vector2(4, 4)
+[node name="player" type="CharacterBody2D" unique_id=169543749 groups=["player"]]
+scale = Vector2(2, 2)
 script = ExtResource("1_g2els")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=370057873]
 position = Vector2(1, 0)
 scale = Vector2(2, 2)
 texture = ExtResource("2_qhqgy")
 hframes = 4
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1903310327]
 position = Vector2(0.5, -1.25)
 shape = SubResource("CircleShape2D_dqkch")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=492853750]
+zoom = Vector2(1.5, 1.5)
 script = ExtResource("3_qhqgy")
 
-[node name="anim_player" type="AnimationPlayer" parent="."]
+[node name="anim_player" type="AnimationPlayer" parent="." unique_id=867607967]
 root_node = NodePath("../Sprite2D")
-libraries = {
-&"": SubResource("AnimationLibrary_smehm")
-}
+libraries/ = SubResource("AnimationLibrary_smehm")
 
-[node name="weapon_pistol" parent="." instance=ExtResource("4_dqkch")]
+[node name="weapon_pistol" parent="." unique_id=1518483603 instance=ExtResource("4_dqkch")]
 position = Vector2(7, 0)
 scale = Vector2(0.4, 0.4)
 
-[node name="helmet_base" type="Sprite2D" parent="."]
+[node name="helmet_base" type="Sprite2D" parent="." unique_id=1911351273]
 position = Vector2(0, -10)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("5_qlg0r")
 
-[node name="vest_sprite" type="Sprite2D" parent="."]
+[node name="vest_sprite" type="Sprite2D" parent="." unique_id=1421650240]
 position = Vector2(0, 1)
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("6_tuyoq")

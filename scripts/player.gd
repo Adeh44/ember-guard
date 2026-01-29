@@ -183,7 +183,7 @@ func attack(direction):
 	
 	# Créer hitbox
 	var hitbox = hitbox_attack_scene.instantiate()
-	hitbox.position = direction * 30  # Position RELATIVE (pas global_position)
+	hitbox.position = direction * 25  # Position RELATIVE (pas global_position)
 	hitbox.crit_chance = crit_chance
 	
 	# Ajouter comme ENFANT du joueur (suit automatiquement)

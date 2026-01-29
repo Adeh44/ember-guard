@@ -1,16 +1,18 @@
 extends Camera2D
 
-#CREATION DU DECALAGE DE LA CAMERA EN FONCTION DE LA DIRECTION DU JOUEUR
+var offset_camera = 20.0  # Distance max caméra vers souris
+var vitesse_transition = 0.08  # Vitesse de suivi souris (0.01-0.15)
 
-var offset_camera = 50.0
-var vitesse_transition = 0.05
-
-#Fonction appelée à chaque frame
 func _process(_delta: float) -> void:
-	var player_velocity = get_parent().velocity
+	# Position souris dans le monde
+	var mouse_pos = get_global_mouse_position()
 	
-	if player_velocity.length() > 0:  # Si le joueur bouge
-		var offset_cible = player_velocity.normalized() * offset_camera
-		position = lerp(position, offset_cible, vitesse_transition)
-	else:  # Si le joueur est immobile
-		position = lerp(position, Vector2.ZERO, vitesse_transition)
+	# Direction du player vers la souris
+	var player_pos = get_parent().global_position
+	var direction_souris = (mouse_pos - player_pos).normalized()
+	
+	# Offset cible (limité à offset_camera pixels)
+	var offset_cible = direction_souris * offset_camera
+	
+	# Interpolation fluide vers offset cible
+	position = lerp(position, offset_cible, vitesse_transition)

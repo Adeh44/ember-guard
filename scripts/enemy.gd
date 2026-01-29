@@ -19,7 +19,18 @@ var player_in_vision = false
 @onready var vision_cone = $vision_cone
 
 func _ready():
-	# ... (code waypoints existant)
+	# Récupérer tous les waypoints dans la scène
+	var waypoints_group = get_tree().get_first_node_in_group("waypoints")
+	if waypoints_group == null:
+		# Fallback : chercher parent "waypoints_group" dans la scène
+		waypoints_group = get_node_or_null("/root/TestLevel/waypoints_group")
+	
+	if waypoints_group != null:
+		for child in waypoints_group.get_children():
+			waypoints.append(child.global_position)
+		print(name, " : ", waypoints.size(), " waypoints trouvés")
+	else:
+		print(name, " : ERREUR - Aucun groupe waypoints trouvé !")
 	
 	# Connecter détection vision
 	if vision_cone != null:
@@ -28,12 +39,6 @@ func _ready():
 	
 	# Trouver le joueur
 	player = get_tree().get_first_node_in_group("player")
-	if waypoints_group != null:
-		for child in waypoints_group.get_children():
-			waypoints.append(child.global_position)
-		print(name, " : ", waypoints.size(), " waypoints trouvés")
-	else:
-		print(name, " : ERREUR - Aucun groupe waypoints trouvé !")
 
 func _physics_process(_delta):
 	match current_state:
