@@ -18,6 +18,11 @@ var player = null  # Référence au joueur
 var player_in_vision = false
 @onready var vision_cone = $vision_cone
 
+# Détection sonore
+var sound_detection_range = 200.0  # Portée audition
+var investigation_target = null  # Position du bruit entendu
+
+
 func _ready():
 	# Récupérer tous les waypoints dans la scène
 	var waypoints_group = get_tree().get_first_node_in_group("waypoints")
@@ -40,12 +45,60 @@ func _ready():
 	# Trouver le joueur
 	player = get_tree().get_first_node_in_group("player")
 
+	# Connecter détection sonore
+	SoundManager.noise_emitted.connect(_on_noise_detected)
+	
+func _on_noise_detected(noise_pos: Vector2, intensity: float):
+	# Calculer distance au bruit
+	var distance = global_position.distance_to(noise_pos)
+	
+	# Si dans portée d'audition
+	if distance < sound_detection_range:
+		# Plus le bruit est fort, plus la portée est grande
+		var effective_range = sound_detection_range * (intensity / 100.0)
+		
+		if distance < effective_range:
+			print(name, " : Bruit entendu ! Investigation...")
+			investigation_target = noise_pos
+			current_state = State.ALERT
+
+	
+	# Si dans portée d'audition
+	if distance < sound_detection_range:
+		# Plus le bruit est fort, plus la portée est grande
+		var effective_range = sound_detection_range * (intensity / 100.0)
+		
+		if distance < effective_range:
+			print(name, " : Bruit entendu ! Investigation...")
+			investigation_target = noise_pos
+			current_state = State.ALERT
+
+
 func _physics_process(_delta):
 	match current_state:
 		State.PATROL:
 			_patrol()
 		State.CHASE:
 			_chase_player()
+
+
+func _investigate():
+	if investigation_target == null:
+		current_state = State.PATROL
+		return
+	
+	# Se diriger vers la source du bruit
+	var direction = (investigation_target - global_position).normalized()
+	velocity = direction * speed
+	move_and_slide()
+	
+	# Si arrivé sur place
+	var distance = global_position.distance_to(investigation_target)
+	if distance < 20.0:
+		print(name, " : Rien trouvé, retour patrouille")
+		investigation_target = null
+		current_state = State.PATROL
+
 
 func _patrol():
 	if waypoints.size() == 0:

@@ -181,6 +181,9 @@ func attack(direction):
 	attacking = true
 	can_attack = false
 	
+	# Générer bruit d'attaque
+	SoundManager.generate_noise(global_position, 50.0)
+	
 	# Créer hitbox
 	var hitbox = hitbox_attack_scene.instantiate()
 	hitbox.position = direction * 25  # Position RELATIVE (pas global_position)

@@ -46,17 +46,11 @@ tile_set = SubResource("TileSet_5ycvo")
 [node name="player" parent="." unique_id=125559712 instance=ExtResource("2_1fpmp")]
 position = Vector2(243, 134)
 
-[node name="enemy" parent="." unique_id=476236003 instance=ExtResource("4_i6x8u")]
-position = Vector2(81, 132)
-
-[node name="enemy2" parent="." unique_id=1869935895 instance=ExtResource("4_i6x8u")]
-position = Vector2(92, 50)
-
 [node name="enemy3" parent="." unique_id=1821416048 instance=ExtResource("4_i6x8u")]
-position = Vector2(422, 35)
+position = Vector2(256, 37)
 
 [node name="enemy4" parent="." unique_id=1690142920 instance=ExtResource("4_i6x8u")]
-position = Vector2(184, 225)
+position = Vector2(72, 151)
 
 [node name="ui_reticle" parent="." unique_id=1731436782 instance=ExtResource("5_8xg12")]
 
