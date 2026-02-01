@@ -78,6 +78,8 @@ func _physics_process(_delta):
 	match current_state:
 		State.PATROL:
 			_patrol()
+		State.ALERT:
+			_investigate()  
 		State.CHASE:
 			_chase_player()
 
