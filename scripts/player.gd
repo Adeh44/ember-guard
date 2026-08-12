@@ -2,6 +2,10 @@ extends CharacterBody2D
 
 # Préchargement de la scène hitbox (optimisation)
 var hitbox_attack_scene = preload("res://scenes/hitbox_attack.tscn")
+var bullet_scene = preload("res://scenes/bullet.tscn")
+
+enum WeaponMode { MELEE, RANGED }
+var current_weapon_mode = WeaponMode.RANGED  # Mode par défaut au démarrage
 
 # Stats du joueur
 var speed = 150.0 # Vitesse de déplacement normale
@@ -22,6 +26,9 @@ var recoil_recovery_rate = 0.15  # Récupération 15%/seconde
 # Système de cooldown attaque
 var can_attack = true
 var attack_cooldown = 0.3  # Secondes entre chaque attaque
+
+var noise_timer = 0.0  # Compte le temps depuis le dernier bruit émis
+var noise_interval = 0.4  # Émet un bruit toutes les 0.4 secondes
 
 # Référence à l'AnimationPlayer
 @onready var anim_player = $anim_player
@@ -68,7 +75,18 @@ func take_damage(amount, _is_critical = false):
 		
 		
 func _physics_process(_delta):
+	
+	# ========== GESTION ARMEMENT ==========
+	# Bascule temporaire CàC/Arme (en attendant la roue d'armement)
+	if Input.is_action_just_pressed("switch_weapon"):
+		if current_weapon_mode == WeaponMode.RANGED:
+			current_weapon_mode = WeaponMode.MELEE
+			print("Mode : Corps à corps")
+		else:
+			current_weapon_mode = WeaponMode.RANGED
+			print("Mode : Arme à feu")
 		
+	
 		# ========== SYSTÈME DE VISÉE ==========
 	if Input.is_action_pressed("aim"):
 		is_aiming = true
@@ -111,6 +129,33 @@ func _physics_process(_delta):
 	var poids_ratio = poids_total / poids_max
 	var current_speed = speed * (1.0 - poids_ratio)
 	current_speed = max(current_speed, speed * 0.3)
+
+		#on voit si Ctrl est présse pour activier la marche lente.
+	var is_slow_walking = Input.is_action_pressed("slow_walk") 
+		
+	var is_sprint = Input.is_action_pressed("sprint")
+		# Si le joueur bouge (direction différente de zéro)
+	if direction != Vector2.ZERO:
+		# On ajoute le temps écoulé depuis la dernière frame au compteur
+		noise_timer += _delta
+
+	if is_slow_walking:
+		current_speed = current_speed / 2
+	elif is_sprint:
+		current_speed = current_speed * 1.5
+		
+	# Si le compteur a atteint ou dépassé le seuil (0.4s)
+	if noise_timer >= noise_interval:
+		# On remet le compteur à zéro pour recommencer à compter
+		noise_timer = 0.0
+
+			# On choisit l'intensité du bruit selon la vitesse de déplacement
+		if is_slow_walking:
+			SoundManager.generate_noise(global_position, 30.0)
+		elif is_sprint:
+			SoundManager.generate_noise(global_position, 150.0)
+		else:
+			SoundManager.generate_noise(global_position, 80.0)
 	
 	# PRIORITÉ 1 : Visée (réduit vitesse drastiquement)
 	if is_aiming:
@@ -169,33 +214,39 @@ func calculate_crit_chance(aim_duration):
 	return clamp(chance, 0.05, 1.0)
 	
 func attack(direction):
-	# Calculer la chance critique AVANT de tirer
+	# Calculer la chance critique AVANT de tirer (commun aux deux modes)
 	var crit_chance = calculate_crit_chance(aim_time)
 	print("Chance critique : ", crit_chance * 100, "%")
 	
-	# Ajouter le recul après le tir
+	# Ajouter le recul après le tir (seulement pertinent pour arme à feu, mais ne gêne pas le CàC)
 	recoil_penalty += recoil_per_shot
 	recoil_penalty = min(recoil_penalty, 0.5)
 	
-	# Ralentir pendant attaque (70% vitesse)
 	attacking = true
 	can_attack = false
 	
-	# Générer bruit d'attaque
-	SoundManager.generate_noise(global_position, 50.0)
+	if current_weapon_mode == WeaponMode.MELEE:
+		# ===== CORPS À CORPS (ancien système hitbox) =====
+		SoundManager.generate_noise(global_position, 50.0)
+		
+		var hitbox = hitbox_attack_scene.instantiate()
+		hitbox.position = direction * 25
+		hitbox.crit_chance = crit_chance
+		add_child(hitbox)
+		
+		await get_tree().create_timer(0.2).timeout
+		hitbox.queue_free()
+	else:
+		# ===== ARME À FEU (nouveau système projectile) =====
+		SoundManager.generate_noise(global_position, weapon.noise_level)
+		
+		var bullet = bullet_scene.instantiate()
+		bullet.global_position = global_position
+		bullet.direction = direction
+		bullet.crit_chance = crit_chance
+		get_tree().current_scene.add_child(bullet)
 	
-	# Créer hitbox
-	var hitbox = hitbox_attack_scene.instantiate()
-	hitbox.position = direction * 25  # Position RELATIVE (pas global_position)
-	hitbox.crit_chance = crit_chance
-	
-	# Ajouter comme ENFANT du joueur (suit automatiquement)
-	add_child(hitbox)
-	
-	# Disparaît plus vite
-	await get_tree().create_timer(0.2).timeout
 	attacking = false
-	hitbox.queue_free()  # Fait disparaître la hitbox
 	
 	await get_tree().create_timer(attack_cooldown).timeout
 	can_attack = true
