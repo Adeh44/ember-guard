@@ -2,32 +2,29 @@ extends CharacterBody2D
 
 # Stats
 var hp = 50
-var speed = 60.0  # Vitesse de patrouille
+var speed = 60.0
 
 # IA Patrouille
-var waypoints = []  # Liste des positions à patrouiller
-var current_waypoint_index = 0  # Index du waypoint actuel
-var patrol_threshold = 10.0  # Distance pour considérer waypoint atteint
+var waypoints = []
+var current_waypoint_index = 0
+var patrol_threshold = 10.0
 
 # IA États
 enum State { PATROL, ALERT, CHASE }
 var current_state = State.PATROL
 
 # Détection
-var player = null  # Référence au joueur
+var player = null
 var player_in_vision = false
 @onready var vision_cone = $vision_cone
 
 # Détection sonore
-var sound_detection_range = 200.0  # Portée audition
-var investigation_target = null  # Position du bruit entendu
-
+var sound_detection_range = 200.0
+var investigation_target = null
 
 func _ready():
-	# Récupérer tous les waypoints dans la scène
 	var waypoints_group = get_tree().get_first_node_in_group("waypoints")
 	if waypoints_group == null:
-		# Fallback : chercher parent "waypoints_group" dans la scène
 		waypoints_group = get_node_or_null("/root/TestLevel/waypoints_group")
 	
 	if waypoints_group != null:
@@ -37,42 +34,25 @@ func _ready():
 	else:
 		print(name, " : ERREUR - Aucun groupe waypoints trouvé !")
 	
-	# Connecter détection vision
 	if vision_cone != null:
 		vision_cone.body_entered.connect(_on_vision_body_entered)
 		vision_cone.body_exited.connect(_on_vision_body_exited)
 	
-	# Trouver le joueur
 	player = get_tree().get_first_node_in_group("player")
-
-	# Connecter détection sonore
 	SoundManager.noise_emitted.connect(_on_noise_detected)
-	
+
 func _on_noise_detected(noise_pos: Vector2, intensity: float):
-	# Calculer distance au bruit
+	# v0.20 FIX : Ignorer bruit si déjà en poursuite
+	if current_state == State.CHASE:
+		return
+	
 	var distance = global_position.distance_to(noise_pos)
-	
-	# Si dans portée d'audition
 	if distance < sound_detection_range:
-		# Plus le bruit est fort, plus la portée est grande
 		var effective_range = sound_detection_range * (intensity / 100.0)
-		
 		if distance < effective_range:
 			print(name, " : Bruit entendu ! Investigation...")
 			investigation_target = noise_pos
 			current_state = State.ALERT
-
-	
-	# Si dans portée d'audition
-	if distance < sound_detection_range:
-		# Plus le bruit est fort, plus la portée est grande
-		var effective_range = sound_detection_range * (intensity / 100.0)
-		
-		if distance < effective_range:
-			print(name, " : Bruit entendu ! Investigation...")
-			investigation_target = noise_pos
-			current_state = State.ALERT
-
 
 func _physics_process(_delta):
 	match current_state:
@@ -83,24 +63,20 @@ func _physics_process(_delta):
 		State.CHASE:
 			_chase_player()
 
-
 func _investigate():
 	if investigation_target == null:
 		current_state = State.PATROL
 		return
 	
-	# Se diriger vers la source du bruit
 	var direction = (investigation_target - global_position).normalized()
 	velocity = direction * speed
 	move_and_slide()
 	
-	# Si arrivé sur place
 	var distance = global_position.distance_to(investigation_target)
 	if distance < 20.0:
 		print(name, " : Rien trouvé, retour patrouille")
 		investigation_target = null
 		current_state = State.PATROL
-
 
 func _patrol():
 	if waypoints.size() == 0:
@@ -121,9 +97,8 @@ func _chase_player():
 		return
 	
 	var direction = (player.global_position - global_position).normalized()
-	velocity = direction * (speed * 1.5)  # Plus rapide en poursuite
+	velocity = direction * (speed * 1.3)  # ← Change 1.5 en 1.3
 	move_and_slide()
-
 
 func _on_vision_body_entered(body):
 	if body.name == "player":
@@ -136,16 +111,12 @@ func _on_vision_body_exited(body):
 		player_in_vision = false
 		current_state = State.PATROL
 		print(name, " : Joueur perdu, retour patrouille")
-		
-		
-# Fonction existante (conserver)
+
 func take_damage(amount, is_critical = false):
 	hp -= amount
-	
 	if is_critical:
-		print("COUP CRITIQUE sur ", name, " ! Dégâts : ", amount)
+		print("CRITIQUE sur ", name, " ! -", amount, " HP")
 	else:
-		print(name, " subit ", amount, " dégâts. HP restants : ", hp)
-	
+		print(name, " : -", amount, " HP restants: ", hp)
 	if hp <= 0:
 		queue_free()
