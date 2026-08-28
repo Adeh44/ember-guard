@@ -7,6 +7,10 @@
 
 [node name="weapon_pistol" type="Node2D" unique_id=894688517]
 script = ExtResource("1_i64ra")
+recoil_per_shot = 0.15
+recoil_recovery_rate = 0.4
+bullet_speed = 2000.0
+magazine_size = 10
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=70175171]
 texture = ExtResource("1_6wch8")

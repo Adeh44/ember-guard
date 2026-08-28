@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cjn72anju4yoq"]
 
 [ext_resource type="Script" uid="uid://y5a17v5jc3sf" path="res://scripts/player.gd" id="1_g2els"]
-[ext_resource type="Texture2D" uid="uid://yyemwafs3h00" path="res://assets/walk.png" id="2_qhqgy"]
+[ext_resource type="Texture2D" uid="uid://c4os1v81ly2uh" path="res://assets/LazyStone_pack/PostApocalypse_AssetPack_v1.1.2/Character/Main/Idle/Character_down_idle-Sheet6.png" id="2_tuyoq"]
 [ext_resource type="Script" uid="uid://b408dri6r3v61" path="res://scripts/camera_2d.gd" id="3_qhqgy"]
 [ext_resource type="PackedScene" uid="uid://cqx2j1nmga50t" path="res://scenes/weapon_pistol.tscn" id="4_dqkch"]
 [ext_resource type="Texture2D" uid="uid://cp6mh4ojni7wl" path="res://assets/sprites/gear/helmet/helmet_base.png" id="5_qlg0r"]
@@ -53,10 +53,8 @@ scale = Vector2(2, 2)
 script = ExtResource("1_g2els")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=370057873]
-position = Vector2(1, 0)
-scale = Vector2(2, 2)
-texture = ExtResource("2_qhqgy")
-hframes = 4
+texture = ExtResource("2_tuyoq")
+hframes = 6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1903310327]
 position = Vector2(0.5, -1.25)
@@ -75,11 +73,11 @@ position = Vector2(7, 0)
 scale = Vector2(0.4, 0.4)
 
 [node name="helmet_base" type="Sprite2D" parent="." unique_id=1911351273]
-position = Vector2(0, -10)
+position = Vector2(0, -5.5000005)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("5_qlg0r")
 
 [node name="vest_sprite" type="Sprite2D" parent="." unique_id=1421650240]
-position = Vector2(0, 1)
+position = Vector2(0, 5.5)
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("6_tuyoq")

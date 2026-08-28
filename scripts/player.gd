@@ -17,10 +17,8 @@ var is_aiming = false
 var aim_time = 0.0
 var max_aim_time = 5.0
 
-# Recul
+# Recul (recoil_per_shot et recoil_recovery_rate viennent maintenant de l'arme)
 var recoil_penalty = 0.0
-var recoil_per_shot = 0.05
-var recoil_recovery_rate = 0.15
 
 # Cooldown
 var can_attack = true
@@ -62,7 +60,6 @@ func take_damage(amount, _is_critical = false):
 func _physics_process(_delta):
 	
 	# ========== GESTION ARMEMENT ==========
-	# Bascule temporaire CàC/Arme (en attendant la roue d'armement)
 	if Input.is_action_just_pressed("switch_weapon"):
 		if current_weapon_mode == WeaponMode.RANGED:
 			current_weapon_mode = WeaponMode.MELEE
@@ -74,13 +71,20 @@ func _physics_process(_delta):
 	# ========== SYSTÈME DE VISÉE ==========
 	if Input.is_action_pressed("aim"):
 		is_aiming = true
+		
+		# Récupération du recul PENDANT la visée (plus lente, boostée par le laser)
 		if recoil_penalty > 0:
-			recoil_penalty -= recoil_recovery_rate * _delta * 0.5
+			var recovery = weapon.recoil_recovery_rate * _delta * 0.5
+			if weapon.has_laser:
+				recovery *= weapon.laser_recovery_multiplier
+			recoil_penalty -= recovery
 			recoil_penalty = max(recoil_penalty, 0.0)
+		
 		var direction_input = Vector2.ZERO
 		direction_input.x = Input.get_axis("left", "right")
 		direction_input.y = Input.get_axis("up", "down")
 		var is_moving = direction_input.length() > 0
+		
 		if is_moving:
 			aim_time += _delta * 0.5
 		else:
@@ -89,8 +93,13 @@ func _physics_process(_delta):
 	else:
 		is_aiming = false
 		aim_time = 0.0
+		
+		# Récupération du recul (hors visée, boostée par le laser)
 		if recoil_penalty > 0:
-			recoil_penalty -= recoil_recovery_rate * _delta
+			var recovery = weapon.recoil_recovery_rate * _delta
+			if weapon.has_laser:
+				recovery *= weapon.laser_recovery_multiplier
+			recoil_penalty -= recovery
 			recoil_penalty = max(recoil_penalty, 0.0)
 	
 	# ========== MOUVEMENT ==========
@@ -104,7 +113,6 @@ func _physics_process(_delta):
 	var current_speed = speed * (1.0 - poids_ratio)
 	current_speed = max(current_speed, speed * 0.3)
 
-	# Marche lente (Ctrl) et sprint (Shift)
 	var is_slow_walking = Input.is_action_pressed("slow_walk")
 	var is_sprint = Input.is_action_pressed("sprint")
 
@@ -113,7 +121,6 @@ func _physics_process(_delta):
 	elif is_sprint:
 		current_speed = current_speed * 1.5
 
-	# Bruit de déplacement (throttlé toutes les 0.4s)
 	if direction != Vector2.ZERO:
 		noise_timer += _delta
 		if noise_timer >= noise_interval:
@@ -125,13 +132,11 @@ func _physics_process(_delta):
 			else:
 				SoundManager.generate_noise(global_position, 80.0)
 	
-	# PRIORITÉ 1 : Visée (réduit vitesse drastiquement)
 	if is_aiming:
 		if direction.length() > 0:
 			current_speed = current_speed * 0.3
 		else:
 			current_speed = 0
-	# PRIORITÉ 2 : Attaque en cours (CàC)
 	elif attacking:
 		current_speed = current_speed * 0.7
 	
@@ -141,14 +146,21 @@ func _physics_process(_delta):
 	
 	move_and_slide()
 	
-	# Animation
 	if velocity.length() > 0:
 		anim_player.play("walk")
 	else:
 		anim_player.stop()
 	
 	# ========== TIR ==========
-	if Input.is_action_just_pressed("atq") and can_attack:
+	if Input.is_action_just_pressed("reload") and not weapon.is_reloading and current_weapon_mode == WeaponMode.RANGED:
+		weapon.is_reloading = true
+		print("Rechargement...")
+		await get_tree().create_timer(weapon.reload_time).timeout
+		weapon.current_ammo = weapon.magazine_size
+		weapon.is_reloading = false
+		print("Rechargement terminé : ", weapon.current_ammo, "/", weapon.magazine_size)
+
+	if Input.is_action_just_pressed("atq") and not weapon.is_reloading:
 		var mouse_pos = get_global_mouse_position()
 		var direction_atq = (mouse_pos - global_position).normalized()
 		attack(direction_atq)
@@ -163,18 +175,13 @@ func calculate_crit_chance(aim_duration):
 	return clamp(chance, 0.05, 1.0)
 
 func attack(direction):
-	# Calculer la chance critique AVANT de tirer (commun aux deux modes)
 	var crit_chance = calculate_crit_chance(aim_time)
 	print("Chance critique : ", crit_chance * 100, "%")
 	
-	recoil_penalty += recoil_per_shot
-	recoil_penalty = min(recoil_penalty, 0.5)
-	
-	attacking = true
-	can_attack = false
-	
 	if current_weapon_mode == WeaponMode.MELEE:
-		# ===== CORPS À CORPS =====
+		attacking = true
+		can_attack = false
+		
 		SoundManager.generate_noise(global_position, 50.0)
 		
 		var hitbox = hitbox_attack_scene.instantiate()
@@ -184,17 +191,51 @@ func attack(direction):
 		
 		await get_tree().create_timer(0.2).timeout
 		hitbox.queue_free()
+		attacking = false
 	else:
-		# ===== ARME À FEU (projectile) =====
+		if weapon.current_ammo <= 0:
+			can_attack = false
+			weapon.is_reloading = true
+			print("Chargeur vide, rechargement automatique...")
+			await get_tree().create_timer(weapon.reload_time).timeout
+			weapon.current_ammo = weapon.magazine_size
+			weapon.is_reloading = false
+			print("Rechargement terminé : ", weapon.current_ammo, "/", weapon.magazine_size)
+			can_attack = true
+			return
+		
+		attacking = true
+		can_attack = false
+		
+		weapon.current_ammo -= 1
+		print("Munitions restantes : ", weapon.current_ammo, "/", weapon.magazine_size)
+		
 		SoundManager.generate_noise(global_position, weapon.noise_level)
+		
+		# Dispersion aléatoire du tir selon le recul accumulé (réduite si laser équipé)
+		
+		var spread_angle = recoil_penalty * weapon.max_spread_angle
+		
+		recoil_penalty += weapon.recoil_per_shot
+		recoil_penalty = min(recoil_penalty, 1.0)
+		
+		print("Recoil: ", recoil_penalty, " | Spread: ", spread_angle, "°")
+		
+		if weapon.has_laser:
+			spread_angle *= (1.0 - weapon.laser_spread_reduction)
+		var random_spread = deg_to_rad(randf_range(-spread_angle, spread_angle))
+		var dispersed_direction = direction.rotated(random_spread)
 		
 		var bullet = bullet_scene.instantiate()
 		bullet.global_position = global_position
-		bullet.direction = direction
+		bullet.direction = dispersed_direction
 		bullet.crit_chance = crit_chance
+		bullet.speed = weapon.bullet_speed
 		get_tree().current_scene.add_child(bullet)
-	
-	attacking = false
+		
+		attacking = false
+		
+		weapon.apply_visual_recoil()
 	
 	await get_tree().create_timer(attack_cooldown).timeout
 	can_attack = true

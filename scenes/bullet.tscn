@@ -5,6 +5,7 @@
 
 [node name="Area2D" type="Area2D" unique_id=163823689]
 script = ExtResource("1_mkf8s")
+speed = 1500.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=703657077]
 

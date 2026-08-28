@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://86r3dcro47u7"]
 
-[ext_resource type="Texture2D" uid="uid://daagron3orntd" path="res://assets/icon.svg" id="1_7p1mj"]
 [ext_resource type="Script" uid="uid://cwfxjdxqffm62" path="res://scripts/enemy.gd" id="1_md0e3"]
+[ext_resource type="Texture2D" uid="uid://pnh2qpglvuy6" path="res://assets/LazyStone_pack/PostApocalypse_AssetPack_v1.1.2/Enemies/Zombie_Axe/Zombie_Axe_Down_Idle-Sheet6.png" id="2_md0e3"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_md0e3"]
 radius = 16.0
@@ -14,8 +14,8 @@ script = ExtResource("1_md0e3")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1645607764]
 modulate = Color(0.99999994, 0.20140278, 0.24078491, 1)
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("1_7p1mj")
+texture = ExtResource("2_md0e3")
+hframes = 6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=820483253]
 shape = SubResource("CircleShape2D_md0e3")
