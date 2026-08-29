@@ -4,6 +4,7 @@ extends Area2D
 @export var speed = 400.0        # Vitesse de déplacement du projectile (pixels/seconde)
 @export var damage = 10          # Dégâts infligés à l'impact
 @export var lifetime = 2.0       # Durée de vie max avant auto-destruction (évite les balles infinies)
+@export var impact_noise = 40.0   # Bruit généré quand la balle touche quelque chose
 
 # Direction du tir (donnée par le joueur au moment du tir, pas modifiable dans l'Inspector)
 var direction = Vector2.RIGHT
@@ -27,6 +28,10 @@ func _on_body_entered(body):
 	# Ignore le joueur (évite de se tirer dessus soi-même)
 	if body.name == "player":
 		return
+		
+		# La balle fait du bruit en frappant ce qu'elle touche
+	print("IMPACT balle")
+	SoundManager.generate_noise(global_position, impact_noise)
 	
 	# Si la cible peut prendre des dégâts, on lui en inflige
 	if body.has_method("take_damage"):

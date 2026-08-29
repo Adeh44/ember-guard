@@ -44,7 +44,7 @@ tile_map_data = PackedByteArray("AAAAAAAAAAACAAAAAAABAAAAAAADAAAAAAAAAAEAAAACAAA
 tile_set = SubResource("TileSet_5ycvo")
 
 [node name="player" parent="." unique_id=125559712 instance=ExtResource("2_1fpmp")]
-position = Vector2(243, 134)
+position = Vector2(412, 242)
 
 [node name="enemy3" parent="." unique_id=1821416048 instance=ExtResource("4_i6x8u")]
 position = Vector2(256, 37)
