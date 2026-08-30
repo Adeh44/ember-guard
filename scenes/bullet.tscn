@@ -3,20 +3,19 @@
 [ext_resource type="Script" uid="uid://otxo76ifoviy" path="res://scripts/bullet.gd" id="1_mkf8s"]
 [ext_resource type="Texture2D" uid="uid://daagron3orntd" path="res://assets/icon.svg" id="2_y25gk"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_yvxat"]
-radius = 7.0
-height = 18.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_h77ia"]
+radius = 2.0
 
-[node name="Area2D" type="Area2D" unique_id=163823689]
+[node name="bullet" type="CharacterBody2D" unique_id=475679624]
+collision_layer = 0
 script = ExtResource("1_mkf8s")
 speed = 20.0
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=836932795]
-
-[node name="Icon" type="Sprite2D" parent="Sprite2D" unique_id=1367589703]
-position = Vector2(0, 0.5)
-scale = Vector2(0.1, 0.1)
+modulate = Color(0.8862745, 0.8862745, 0, 1)
+self_modulate = Color(0.838619, 0.75398916, 0, 1)
+scale = Vector2(0.03, 0.03)
 texture = ExtResource("2_y25gk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=703657077]
-shape = SubResource("CapsuleShape2D_yvxat")
+shape = SubResource("CircleShape2D_h77ia")

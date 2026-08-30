@@ -13,6 +13,8 @@ var fire_rate = 0.3
 @export var recoil_per_shot = 0.05    # Augmentation du recul par tir (déjà présent côté joueur, à déplacer ici)
 @export var recoil_recovery_rate = 0.15  # Vitesse de récupération du recul
 @export var bullet_speed = 400.0  # Vitesse des balles tirées par cette arme
+@export var bullet_range = 400.0         # Portée en pixels (l'écran fait 480 px de large)
+@export var bullet_impact_noise = 40.0   # Bruit fait par la balle en frappant une surface
 
 # ========== RECUL VISUEL ==========
 @export var visual_recoil_distance = 4.0  # Distance de recul en pixels

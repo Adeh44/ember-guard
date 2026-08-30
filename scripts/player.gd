@@ -219,19 +219,25 @@ func attack(direction):
 		recoil_penalty += weapon.recoil_per_shot
 		recoil_penalty = min(recoil_penalty, 1.0)
 		
-		print("Recoil: ", recoil_penalty, " | Spread: ", spread_angle, "°")
-		
+		print("Tir | spread applique : ", spread_angle, "° | recul apres tir : ", recoil_penalty)
+				
 		if weapon.has_laser:
 			spread_angle *= (1.0 - weapon.laser_spread_reduction)
 		var random_spread = deg_to_rad(randf_range(-spread_angle, spread_angle))
 		var dispersed_direction = direction.rotated(random_spread)
 		
 		var bullet = bullet_scene.instantiate()
+		# add_child D'ABORD : global_position n'a de sens qu'une fois dans la scène
+		get_tree().current_scene.add_child(bullet)
 		bullet.global_position = global_position
 		bullet.direction = dispersed_direction
 		bullet.crit_chance = crit_chance
+		# La balle hérite de TOUTES les stats de l'arme.
+		# Changer d'arme change le comportement des balles sans toucher au code.
 		bullet.speed = weapon.bullet_speed
-		get_tree().current_scene.add_child(bullet)
+		bullet.damage = weapon.damage                       # ← corrige le silencieux
+		bullet.max_range = weapon.bullet_range
+		bullet.impact_noise = weapon.bullet_impact_noise
 		
 		attacking = false
 		
