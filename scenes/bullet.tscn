@@ -5,13 +5,13 @@
 
 [node name="Area2D" type="Area2D" unique_id=163823689]
 script = ExtResource("1_mkf8s")
-speed = 1500.0
+speed = 20.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=703657077]
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=836932795]
+[node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D" unique_id=836932795]
 
-[node name="Icon" type="Sprite2D" parent="." unique_id=1367589703]
+[node name="Icon" type="Sprite2D" parent="CollisionShape2D/Sprite2D" unique_id=1367589703]
 position = Vector2(0, 0.5)
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("2_y25gk")
