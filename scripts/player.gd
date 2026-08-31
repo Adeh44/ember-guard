@@ -126,7 +126,11 @@ func _physics_process(_delta):
 		if noise_timer >= noise_interval:
 			noise_timer = 0.0
 			if is_slow_walking:
-				SoundManager.generate_noise(global_position, 30.0)
+				# 45 et non 30 : à 30, la portée du bruit était de 31 px seulement
+				# (banc d'essai du 31/08) — la marche lente était inaudible partout,
+				# donc le mode furtif ne coûtait rien. À 45, portée 47 px : toujours
+				# étouffée par un mur épais, mais audible de près et à découvert.
+				SoundManager.generate_noise(global_position, 45.0)
 			elif is_sprint:
 				SoundManager.generate_noise(global_position, 150.0)
 			else:
