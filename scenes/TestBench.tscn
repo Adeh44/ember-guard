@@ -1,0 +1,178 @@
+[gd_scene format=3 uid="uid://boo8qux3gcb61"]
+
+[ext_resource type="PackedScene" uid="uid://cjn72anju4yoq" path="res://scenes/player.tscn" id="1_player"]
+[ext_resource type="PackedScene" uid="uid://86r3dcro47u7" path="res://scenes/enemy.tscn" id="2_enemy"]
+[ext_resource type="PackedScene" path="res://scenes/wall.tscn" id="3_wall"]
+[ext_resource type="PackedScene" uid="uid://dqk13jbfta2sc" path="res://scenes/ui_reticle.tscn" id="4_reticle"]
+[ext_resource type="PackedScene" uid="uid://qisj5v7fmsm1" path="res://scenes/ui_weight.tscn" id="5_weight"]
+
+[node name="TestBench" type="Node2D" unique_id=1215302758]
+
+[node name="fond" type="ColorRect" parent="." unique_id=2142810755]
+z_index = -10
+offset_left = -151.0
+offset_top = -181.0
+offset_right = 1349.0
+offset_bottom = 819.0
+mouse_filter = 2
+color = Color(0.11, 0.11, 0.13, 1)
+
+[node name="ZoneA_Murs" type="Node2D" parent="." unique_id=1920613160]
+
+[node name="mur_epais" parent="ZoneA_Murs" unique_id=1070405310 instance=ExtResource("3_wall")]
+position = Vector2(200, 0)
+wall_type = "epais"
+size = Vector2(300, 16)
+
+[node name="enemy_A1" parent="ZoneA_Murs" unique_id=1936690091 instance=ExtResource("2_enemy")]
+position = Vector2(200, -16)
+is_stationary = true
+vision_enabled = false
+
+[node name="spawn_A1_08" type="Marker2D" parent="ZoneA_Murs" unique_id=955919254]
+position = Vector2(200, 16)
+
+[node name="spawn_A1_25" type="Marker2D" parent="ZoneA_Murs" unique_id=1310418424]
+position = Vector2(200, 33)
+
+[node name="spawn_A1_60" type="Marker2D" parent="ZoneA_Murs" unique_id=386972116]
+position = Vector2(200, 68)
+
+[node name="spawn_A1_130" type="Marker2D" parent="ZoneA_Murs" unique_id=1065867398]
+position = Vector2(200, 138)
+
+[node name="mur_moyen" parent="ZoneA_Murs" unique_id=14904809 instance=ExtResource("3_wall")]
+position = Vector2(200, 250)
+size = Vector2(300, 8)
+
+[node name="enemy_A2" parent="ZoneA_Murs" unique_id=1058597365 instance=ExtResource("2_enemy")]
+position = Vector2(200, 238)
+is_stationary = true
+vision_enabled = false
+
+[node name="spawn_A2_08" type="Marker2D" parent="ZoneA_Murs" unique_id=1917744564]
+position = Vector2(200, 262)
+
+[node name="spawn_A2_25" type="Marker2D" parent="ZoneA_Murs" unique_id=664262742]
+position = Vector2(200, 279)
+
+[node name="spawn_A2_60" type="Marker2D" parent="ZoneA_Murs" unique_id=148420422]
+position = Vector2(200, 314)
+
+[node name="spawn_A2_130" type="Marker2D" parent="ZoneA_Murs" unique_id=1982149912]
+position = Vector2(200, 384)
+
+[node name="mur_fin" parent="ZoneA_Murs" unique_id=794172539 instance=ExtResource("3_wall")]
+position = Vector2(200, 500)
+wall_type = "fin"
+size = Vector2(300, 4)
+
+[node name="enemy_A3" parent="ZoneA_Murs" unique_id=1766316418 instance=ExtResource("2_enemy")]
+position = Vector2(200, 490)
+is_stationary = true
+vision_enabled = false
+
+[node name="spawn_A3_08" type="Marker2D" parent="ZoneA_Murs" unique_id=361293252]
+position = Vector2(200, 510)
+
+[node name="spawn_A3_25" type="Marker2D" parent="ZoneA_Murs" unique_id=138584741]
+position = Vector2(200, 527)
+
+[node name="spawn_A3_60" type="Marker2D" parent="ZoneA_Murs" unique_id=1441721177]
+position = Vector2(200, 562)
+
+[node name="spawn_A3_130" type="Marker2D" parent="ZoneA_Murs" unique_id=361626388]
+position = Vector2(200, 632)
+
+[node name="ZoneB_Couloir" type="Node2D" parent="." unique_id=213830901]
+
+[node name="mur_couloir_haut" parent="ZoneB_Couloir" unique_id=1500764080 instance=ExtResource("3_wall")]
+position = Vector2(600, 0)
+size = Vector2(150, 8)
+
+[node name="mur_couloir_bas" parent="ZoneB_Couloir" unique_id=595276240 instance=ExtResource("3_wall")]
+position = Vector2(600, 80)
+size = Vector2(150, 8)
+
+[node name="enemy_B1_dans_couloir" parent="ZoneB_Couloir" unique_id=1981639345 instance=ExtResource("2_enemy")]
+position = Vector2(665, 40)
+is_stationary = true
+vision_enabled = false
+
+[node name="enemy_B2_derriere_mur" parent="ZoneB_Couloir" unique_id=2017194896 instance=ExtResource("2_enemy")]
+position = Vector2(600, 96)
+is_stationary = true
+vision_enabled = false
+
+[node name="spawn_B_fond" type="Marker2D" parent="ZoneB_Couloir" unique_id=1748087407]
+position = Vector2(535, 40)
+
+[node name="spawn_B_milieu" type="Marker2D" parent="ZoneB_Couloir" unique_id=1200197583]
+position = Vector2(600, 40)
+
+[node name="ZoneC_Piece" type="Node2D" parent="." unique_id=1458621596]
+
+[node name="mur_C_haut" parent="ZoneC_Piece" unique_id=777759563 instance=ExtResource("3_wall")]
+position = Vector2(610, 216)
+size = Vector2(108, 8)
+
+[node name="mur_C_gauche" parent="ZoneC_Piece" unique_id=162832693 instance=ExtResource("3_wall")]
+position = Vector2(556, 260)
+size = Vector2(8, 88)
+
+[node name="mur_C_droite" parent="ZoneC_Piece" unique_id=1156699854 instance=ExtResource("3_wall")]
+position = Vector2(664, 260)
+size = Vector2(8, 88)
+
+[node name="mur_C_bas_gauche" parent="ZoneC_Piece" unique_id=373183370 instance=ExtResource("3_wall")]
+position = Vector2(576, 304)
+size = Vector2(48, 8)
+
+[node name="mur_C_bas_droite" parent="ZoneC_Piece" unique_id=1381139047 instance=ExtResource("3_wall")]
+position = Vector2(644, 304)
+size = Vector2(48, 8)
+
+[node name="enemy_C1" parent="ZoneC_Piece" unique_id=245144470 instance=ExtResource("2_enemy")]
+position = Vector2(610, 260)
+is_stationary = true
+vision_enabled = false
+
+[node name="spawn_C_face_ouverture" type="Marker2D" parent="ZoneC_Piece" unique_id=351249782]
+position = Vector2(610, 330)
+
+[node name="spawn_C_face_mur" type="Marker2D" parent="ZoneC_Piece" unique_id=589991751]
+position = Vector2(560, 330)
+
+[node name="ZoneD_Patrouille" type="Node2D" parent="." unique_id=1489847144]
+
+[node name="mur_D_obstacle" parent="ZoneD_Patrouille" unique_id=804135312 instance=ExtResource("3_wall")]
+position = Vector2(1015, 330)
+wall_type = "epais"
+size = Vector2(16, 120)
+
+[node name="enemy_D1_patrouille" parent="ZoneD_Patrouille" unique_id=1691529230 instance=ExtResource("2_enemy")]
+position = Vector2(880, 240)
+
+[node name="spawn_D_zone_degagee" type="Marker2D" parent="ZoneD_Patrouille" unique_id=373546685]
+position = Vector2(960, 480)
+
+[node name="waypoints_group" type="Node2D" parent="." unique_id=1551308777 groups=["waypoints"]]
+
+[node name="wp_1" type="Marker2D" parent="waypoints_group" unique_id=1502885246]
+position = Vector2(880, 240)
+
+[node name="wp_2" type="Marker2D" parent="waypoints_group" unique_id=927138774]
+position = Vector2(1150, 240)
+
+[node name="wp_3" type="Marker2D" parent="waypoints_group" unique_id=1129651233]
+position = Vector2(1150, 420)
+
+[node name="wp_4" type="Marker2D" parent="waypoints_group" unique_id=311985723]
+position = Vector2(880, 420)
+
+[node name="player" parent="." unique_id=809196411 instance=ExtResource("1_player")]
+position = Vector2(960, 480)
+
+[node name="ui_reticle" parent="." unique_id=249582039 instance=ExtResource("4_reticle")]
+
+[node name="ui_weight" parent="." unique_id=1215397298 instance=ExtResource("5_weight")]
