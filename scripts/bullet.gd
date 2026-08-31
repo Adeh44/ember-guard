@@ -6,7 +6,7 @@ extends CharacterBody2D
 # ========== VALEURS PAR DÉFAUT ==========
 # Toutes ces valeurs sont ÉCRASÉES par l'arme au moment du tir (voir player.gd).
 # Elles ne servent que si on pose une balle à la main dans une scène.
-@export var speed = 700.0          # Vitesse en pixels/seconde
+@export var speed = 375          # Vitesse en pixels/seconde
 @export var damage = 10            # Dégâts à l'impact
 @export var max_range = 400.0      # Portée en pixels avant auto-destruction
 @export var impact_noise = 40.0    # Bruit généré quand la balle frappe
@@ -22,6 +22,8 @@ func _ready():
 	# La balle naît DANS le joueur. Sans cette exception, move_and_collide
 	# détecterait le joueur dès la première frame et la balle mourrait aussitôt.
 	# add_collision_exception_with() dit au moteur physique : "ignore ce corps".
+	# Oriente la balle dans le sens du tir (le sprite pointe vers la droite au repos)
+	rotation = direction.angle()
 	var player = get_tree().get_first_node_in_group("player")
 	if player != null:
 		add_collision_exception_with(player)

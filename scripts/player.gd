@@ -7,7 +7,7 @@ enum WeaponMode { MELEE, RANGED }
 var current_weapon_mode = WeaponMode.RANGED  # Mode par défaut au démarrage
 
 # Stats
-var speed = 150.0
+@export var speed = 80
 
 # États
 var attacking = false
@@ -185,7 +185,7 @@ func attack(direction):
 		SoundManager.generate_noise(global_position, 50.0)
 		
 		var hitbox = hitbox_attack_scene.instantiate()
-		hitbox.position = direction * 25
+		hitbox.position = direction * 13
 		hitbox.crit_chance = crit_chance
 		add_child(hitbox)
 		
@@ -245,3 +245,9 @@ func attack(direction):
 	
 	await get_tree().create_timer(attack_cooldown).timeout
 	can_attack = true
+	
+func _unhandled_input(event):
+# Échap ferme le jeu. Temporaire : sera remplacé par un vrai menu pause.
+# "ui_cancel" est une action native de Godot, déjà mappée sur Échap.
+	if event.is_action_pressed("ui_cancel"):
+		get_tree().quit()

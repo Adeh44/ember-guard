@@ -1,13 +1,13 @@
 extends CharacterBody2D
 
 # Stats
-var hp = 50
-var speed = 60.0
+@export var hp = 50
+@export var speed = 32
 
 # IA Patrouille
 var waypoints = []
 var current_waypoint_index = 0
-var patrol_threshold = 10.0
+var patrol_threshold = 5
 
 # IA États
 enum State { PATROL, ALERT, CHASE }
@@ -19,7 +19,7 @@ var player_in_vision = false
 @onready var vision_cone = $vision_cone
 
 # Détection sonore
-var sound_detection_range = 200.0
+@export var sound_detection_range = 105
 var investigation_target = null
 
 func _ready():
@@ -73,7 +73,7 @@ func _investigate():
 	move_and_slide()
 	
 	var distance = global_position.distance_to(investigation_target)
-	if distance < 20.0:
+	if distance < 10 :
 		print(name, " : Rien trouvé, retour patrouille")
 		investigation_target = null
 		current_state = State.PATROL

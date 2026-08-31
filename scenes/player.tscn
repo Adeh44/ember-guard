@@ -4,11 +4,11 @@
 [ext_resource type="Texture2D" uid="uid://c4os1v81ly2uh" path="res://assets/LazyStone_pack/PostApocalypse_AssetPack_v1.1.2/Character/Main/Idle/Character_down_idle-Sheet6.png" id="2_tuyoq"]
 [ext_resource type="Script" uid="uid://b408dri6r3v61" path="res://scripts/camera_2d.gd" id="3_qhqgy"]
 [ext_resource type="PackedScene" uid="uid://cqx2j1nmga50t" path="res://scenes/weapon_pistol.tscn" id="4_dqkch"]
-[ext_resource type="Texture2D" uid="uid://cp6mh4ojni7wl" path="res://assets/sprites/gear/helmet/helmet_base.png" id="5_qlg0r"]
+[ext_resource type="Texture2D" uid="uid://cgqp57u3uis0k" path="res://assets/LazyStone_pack/PostApocalypse_AssetPack_v1.1.2/Character/Helmet/Helmet_Up-and-Down_Idle-and-Run-Sheet6.png" id="5_tuyoq"]
 [ext_resource type="Texture2D" uid="uid://c1b684l8xyhrj" path="res://assets/sprites/gear/vest/vest_base.png" id="6_tuyoq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dqkch"]
-radius = 13.0
+radius = 5.0
 
 [sub_resource type="Animation" id="Animation_fjrip"]
 length = 0.001
@@ -49,7 +49,6 @@ _data = {
 }
 
 [node name="player" type="CharacterBody2D" unique_id=169543749 groups=["player"]]
-scale = Vector2(2, 2)
 collision_mask = 3
 script = ExtResource("1_g2els")
 
@@ -58,11 +57,9 @@ texture = ExtResource("2_tuyoq")
 hframes = 6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1903310327]
-position = Vector2(0.5, -1.25)
 shape = SubResource("CircleShape2D_dqkch")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=492853750]
-zoom = Vector2(1.5, 1.5)
 script = ExtResource("3_qhqgy")
 
 [node name="anim_player" type="AnimationPlayer" parent="." unique_id=867607967]
@@ -70,15 +67,13 @@ root_node = NodePath("../Sprite2D")
 libraries/ = SubResource("AnimationLibrary_smehm")
 
 [node name="weapon_pistol" parent="." unique_id=1518483603 instance=ExtResource("4_dqkch")]
-position = Vector2(7, 0)
-scale = Vector2(0.4, 0.4)
+position = Vector2(6, 3)
 
 [node name="helmet_base" type="Sprite2D" parent="." unique_id=1911351273]
-position = Vector2(0, -5.5000005)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("5_qlg0r")
+position = Vector2(0, -6)
+texture = ExtResource("5_tuyoq")
+hframes = 6
 
 [node name="vest_sprite" type="Sprite2D" parent="." unique_id=1421650240]
-position = Vector2(0, 5.5)
-scale = Vector2(0.3, 0.3)
+visible = false
 texture = ExtResource("6_tuyoq")

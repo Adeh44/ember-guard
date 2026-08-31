@@ -1,7 +1,7 @@
 extends Camera2D
 
-var offset_camera = 20.0  # Distance max caméra vers souris
-var vitesse_transition = 0.08  # Vitesse de suivi souris (0.01-0.15)
+@export var offset_camera = 11  # Distance max caméra vers souris
+@export var vitesse_transition = 0.08  # Vitesse de suivi souris (0.01-0.15)
 
 func _process(_delta: float) -> void:
 	# Position souris dans le monde

@@ -4,10 +4,10 @@
 [ext_resource type="Texture2D" uid="uid://pnh2qpglvuy6" path="res://assets/LazyStone_pack/PostApocalypse_AssetPack_v1.1.2/Enemies/Zombie_Axe/Zombie_Axe_Down_Idle-Sheet6.png" id="2_md0e3"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_md0e3"]
-radius = 16.0
+radius = 6.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4ra3w"]
-radius = 40.0
+radius = 21.0
 
 [node name="enemy" type="CharacterBody2D" unique_id=1625477592]
 script = ExtResource("1_md0e3")

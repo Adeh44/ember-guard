@@ -59,11 +59,12 @@ func _process(_delta):
 	rotation = direction
 	rotation += recoil_rotation_offset
 		
-	# Flip si vise à gauche
+	# Miroir vertical quand on vise à gauche, pour que l'arme ne soit pas à l'envers.
+	# Valeur 1 et non 0.4 : en pixel art, un scale non entier detruit le rendu.
 	if abs(direction) > PI / 2:
-		scale.y = -0.4
+		scale.y = -1
 	else:
-		scale.y = 0.4
+		scale.y = 1
 
 	# Retour progressif à la position normale après le recul
 	recoil_offset = recoil_offset.lerp(Vector2.ZERO, visual_recoil_recovery_speed * _delta)
