@@ -24,13 +24,13 @@ var player_in_vision = false
 
 var investigation_target = null
 
-# Pénalités par type de mur : ce qu'il reste de son est DIVISÉ par ce nombre.
-# Un Dictionary, c'est une liste de paires clé → valeur.
-# wall_penalties["epais"] renvoie 4.0. Pratique pour associer un texte à un nombre.
+# Coût de traversée par type de mur, en PIXELS de portée retirés.
+# Modèle soustractif (décision du 01/09) : chaque mur mange un montant fixe.
+# L'empilement est linéaire : 2 tuiles épaisses = -150, lisible en level design.
 var wall_penalties = {
-	"epais": 4.0,
-	"moyen": 2.0,
-	"fin": 1.2
+	"epais": 75.0,
+	"moyen": 35.0,
+	"fin": 15.0
 }
 
 const MAX_MURS = 5          # Sécurité : au-delà, on arrête (anti boucle infinie)
@@ -98,11 +98,36 @@ func _on_noise_detected(noise_pos: Vector2, intensity: float):
 				print(name, " : bruit éteint AVANT le mur")
 			return
 
-		# 2) Le mur atténue : on divise ce qu'il reste
-		var type_mur = "moyen"
-		if "wall_type" in impact.collider:
+		# 2) Le mur atténue : on retire son coût en px.
+		#    Le type de mur vient de deux sources différentes selon ce qu'on a touché.
+		var type_mur = "moyen"   # valeur de repli si on ne trouve rien
+		
+		if impact.collider is TileMapLayer:
+			# Cas TILEMAP : le collider est le calque entier, pas une tuile.
+			# get_coords_for_body_rid() retrouve QUELLE case a été touchée,
+			# à partir de l'identifiant physique (rid) renvoyé par le raycast.
+			var coords = impact.collider.get_coords_for_body_rid(impact.rid)
+			var donnees_tuile = impact.collider.get_cell_tile_data(coords)
+			if donnees_tuile != null:
+				type_mur = donnees_tuile.get_custom_data("wall_type")
+		elif "wall_type" in impact.collider:
+			# Cas OBJET : mur du banc d'essai, container, véhicule...
 			type_mur = impact.collider.wall_type
-		reste /= wall_penalties.get(type_mur, 2.0)
+		
+		# Garde-fou : une tuile sans wall_type renseigné passerait en "moyen"
+		# sans rien dire. Ici on le signale au lieu de le subir en silence.
+		if debug_sound and not type_mur in wall_penalties:
+			print(name, " : type de mur INCONNU '", type_mur, "' sur ", impact.collider.name, " -> moyen par defaut")
+			
+		reste -= wall_penalties.get(type_mur, 35.0)
+		if debug_sound:
+			print("   ↳ mur '", type_mur, "' (-", wall_penalties.get(type_mur, 35.0), " px) — reste %.1f px" % reste)
+
+		# Garde-fou : le mur a tout absorbé -> le bruit meurt ici
+		if reste <= 0:
+			if debug_sound:
+				print(name, " : bruit éteint PAR le mur '", type_mur, "'")
+			return
 
 		# 3) On repart 2 px DERRIÈRE le point d'impact.
 		#    Sans ce décalage, le raycast suivant retoucherait le même mur → boucle infinie.
