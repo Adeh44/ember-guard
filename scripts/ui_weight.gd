@@ -1,13 +1,14 @@
+# ============================================================
+# ui_weight.gd — affichage du poids porté (Label à l'écran)
+# ============================================================
 extends Label
 
-# Référence au joueur
-var player = null
+var player = null   # Référence au joueur, trouvée au lancement
 
 func _ready():
-	# Trouver le joueur dans la scène
 	player = get_tree().get_first_node_in_group("player")
 
 func _process(_delta):
-	# Mettre à jour l'affichage du poids
+	# %.1f = un chiffre après la virgule ; %.0f = aucun
 	if player != null:
 		text = "Poids: %.1f/%.0f kg" % [player.poids_total, player.poids_max]

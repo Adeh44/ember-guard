@@ -1,25 +1,26 @@
+# ============================================================
+# ui_reticle.gd — le réticule qui remplace le curseur système
+# Il suit la souris et rétrécit pendant la visée : plus on vise
+# longtemps, plus il est petit — retour visuel direct de la
+# chance de critique.
+# ============================================================
 extends CanvasLayer
 
-# Référence au conteneur central
-@onready var center_container = $center_container
+@onready var center_container = $center_container   # Le visuel du réticule
 
-# Référence au joueur (pour récupérer aim_time)
-var player = null
+var player = null   # Pour lire aim_time / max_aim_time
 
 func _ready():
-	# Cacher le curseur système
+	# On cache le curseur système : le réticule le remplace
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
-	
-	# Trouver le joueur dans la scène
 	player = get_tree().get_first_node_in_group("player")
 
 func _process(_delta):
-	# Faire suivre le réticule à la souris
+	# Le réticule colle à la souris (coordonnées écran, pas monde : CanvasLayer)
 	center_container.position = get_viewport().get_mouse_position()
-	
-	# Calculer le scale basé sur la visée
+
+	# Taille selon la visée : de 0.7 (pas visé) à 0.35 (visée pleine)
 	if player != null:
-		var aim_ratio = player.aim_time / player.max_aim_time  # 0.0 à 1.0
-		# Formule : commence à 0.7, descend jusqu'à 0.35
+		var aim_ratio = player.aim_time / player.max_aim_time   # 0.0 → 1.0
 		var target_scale = 0.7 - (aim_ratio * 0.35)
 		center_container.scale = Vector2(target_scale, target_scale)

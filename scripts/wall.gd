@@ -1,3 +1,9 @@
+# ============================================================
+# wall.gd — mur du banc d'essai, réglable depuis l'Inspector
+# Type (atténuation du son) + taille, avec mise à jour en direct
+# dans l'éditeur. Les VRAIS murs de niveau sont des tuiles
+# (TileMapLayer) ; celui-ci sert aux tests et aux objets isolés.
+# ============================================================
 @tool
 # @tool = ce script tourne AUSSI dans l'éditeur Godot, pas seulement en jeu.
 # Concrètement : quand tu changes "Size" ou "Wall Type" dans l'Inspector,

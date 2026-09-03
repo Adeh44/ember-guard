@@ -1,19 +1,26 @@
+# ============================================================
+# enemy.gd — l'ennemi
+# Patrouille entre des waypoints, entend les bruits (avec
+# atténuation par les murs), enquête sur ce qu'il entend, et
+# poursuit le joueur s'il le voit dans son cône de vision.
+# États : PATROL → ALERT (bruit) → CHASE (vu).
+# ============================================================
 extends CharacterBody2D
 
-# Stats
+# ========== STATS ==========
 @export var hp = 50
 @export var speed = 32
 
-# IA Patrouille
+# ========== IA PATROUILLE ==========
 var waypoints = []
 var current_waypoint_index = 0
-var patrol_threshold = 5
+var patrol_threshold = 5   # Distance (px) à laquelle un waypoint est "atteint"
 
-# IA États
+# ========== IA ÉTATS ==========
 enum State { PATROL, ALERT, CHASE }
 var current_state = State.PATROL
 
-# Détection
+# ========== DÉTECTION VISUELLE ==========
 var player = null
 var player_in_vision = false
 @onready var vision_cone = $vision_cone
@@ -45,19 +52,19 @@ func _ready():
 	var waypoints_group = get_tree().get_first_node_in_group("waypoints")
 	if waypoints_group == null:
 		waypoints_group = get_node_or_null("/root/TestLevel/waypoints_group")
-	
+
 	if waypoints_group != null:
 		for child in waypoints_group.get_children():
 			waypoints.append(child.global_position)
 		print(name, " : ", waypoints.size(), " waypoints trouvés")
 	else:
 		print(name, " : ERREUR - Aucun groupe waypoints trouvé !")
-	
+
 	if vision_cone != null:
 		vision_cone.body_entered.connect(_on_vision_body_entered)
 		vision_cone.body_exited.connect(_on_vision_body_exited)
 		vision_cone.monitoring = vision_enabled
-		
+
 	player = get_tree().get_first_node_in_group("player")
 	SoundManager.noise_emitted.connect(_on_noise_detected)
 
@@ -101,7 +108,7 @@ func _on_noise_detected(noise_pos: Vector2, intensity: float):
 		# 2) Le mur atténue : on retire son coût en px.
 		#    Le type de mur vient de deux sources différentes selon ce qu'on a touché.
 		var type_mur = "moyen"   # valeur de repli si on ne trouve rien
-		
+
 		if impact.collider is TileMapLayer:
 			# Cas TILEMAP : le collider est le calque entier, pas une tuile.
 			# get_coords_for_body_rid() retrouve QUELLE case a été touchée,
@@ -113,12 +120,12 @@ func _on_noise_detected(noise_pos: Vector2, intensity: float):
 		elif "wall_type" in impact.collider:
 			# Cas OBJET : mur du banc d'essai, container, véhicule...
 			type_mur = impact.collider.wall_type
-		
+
 		# Garde-fou : une tuile sans wall_type renseigné passerait en "moyen"
 		# sans rien dire. Ici on le signale au lieu de le subir en silence.
 		if debug_sound and not type_mur in wall_penalties:
 			print(name, " : type de mur INCONNU '", type_mur, "' sur ", impact.collider.name, " -> moyen par defaut")
-			
+
 		reste -= wall_penalties.get(type_mur, 35.0)
 		if debug_sound:
 			print("   ↳ mur '", type_mur, "' (-", wall_penalties.get(type_mur, 35.0), " px) — reste %.1f px" % reste)
@@ -159,36 +166,38 @@ func _investigate():
 	if investigation_target == null:
 		current_state = State.PATROL
 		return
-	
+
 	# BANC D'ESSAI : un ennemi "stationnaire" signale qu'il a entendu (le print est déjà
 	# parti) mais ne quitte pas son poste. Ça permet d'enchaîner les tests sans relancer.
 	if is_stationary:
 		investigation_target = null
 		current_state = State.PATROL
 		return
-	
+
 	var direction = (investigation_target - global_position).normalized()
-	
+
 	velocity = direction * speed
 	move_and_slide()
-	
+
+	# Arrivé sur place sans rien trouver : retour en patrouille
 	var distance = global_position.distance_to(investigation_target)
-	if distance < 10 :
+	if distance < 10:
 		print(name, " : Rien trouvé, retour patrouille")
 		investigation_target = null
 		current_state = State.PATROL
 
 func _patrol():
-	if is_stationary:   
-		return          
+	if is_stationary:
+		return
 	if waypoints.size() == 0:
 		return
-	
+
 	var target_pos = waypoints[current_waypoint_index]
 	var direction = (target_pos - global_position).normalized()
 	velocity = direction * speed
 	move_and_slide()
-	
+
+	# Waypoint atteint : on passe au suivant (% = retour au début en fin de liste)
 	var distance = global_position.distance_to(target_pos)
 	if distance < patrol_threshold:
 		current_waypoint_index = (current_waypoint_index + 1) % waypoints.size()
@@ -197,9 +206,10 @@ func _chase_player():
 	if player == null:
 		current_state = State.PATROL
 		return
-	
+
+	# En poursuite, l'ennemi court 30% plus vite que sa patrouille
 	var direction = (player.global_position - global_position).normalized()
-	velocity = direction * (speed * 1.3)  # ← Change 1.5 en 1.3
+	velocity = direction * (speed * 1.3)
 	move_and_slide()
 
 func _on_vision_body_entered(body):
