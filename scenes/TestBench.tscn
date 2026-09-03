@@ -1,12 +1,14 @@
-[gd_scene format=3 uid="uid://boo8qux3gcb61"]
+[gd_scene format=4 uid="uid://boo8qux3gcb61"]
 
 [ext_resource type="PackedScene" uid="uid://cjn72anju4yoq" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" uid="uid://86r3dcro47u7" path="res://scenes/enemy.tscn" id="2_enemy"]
 [ext_resource type="PackedScene" path="res://scenes/wall.tscn" id="3_wall"]
 [ext_resource type="PackedScene" uid="uid://dqk13jbfta2sc" path="res://scenes/ui_reticle.tscn" id="4_reticle"]
 [ext_resource type="PackedScene" uid="uid://qisj5v7fmsm1" path="res://scenes/ui_weight.tscn" id="5_weight"]
+[ext_resource type="TileSet" uid="uid://dy01afbp68dyf" path="res://tilesets/obstacles.tres" id="6_8utli"]
 
 [node name="TestBench" type="Node2D" unique_id=1215302758]
+metadata/_edit_vertical_guides_ = [1300.0, 1449.0, 1650.0]
 
 [node name="fond" type="ColorRect" parent="." unique_id=2142810755]
 z_index = -10
@@ -26,6 +28,21 @@ size = Vector2(300, 16)
 
 [node name="enemy_A1" parent="ZoneA_Murs" unique_id=1936690091 instance=ExtResource("2_enemy")]
 position = Vector2(200, -16)
+is_stationary = true
+vision_enabled = false
+
+[node name="enemy_E1" parent="ZoneA_Murs" unique_id=1625477592 instance=ExtResource("2_enemy")]
+position = Vector2(1332, -45)
+is_stationary = true
+vision_enabled = false
+
+[node name="enemy_E2" parent="ZoneA_Murs" unique_id=2141999869 instance=ExtResource("2_enemy")]
+position = Vector2(1508, -45)
+is_stationary = true
+vision_enabled = false
+
+[node name="enemy_E3" parent="ZoneA_Murs" unique_id=1967341582 instance=ExtResource("2_enemy")]
+position = Vector2(1684, -45)
 is_stationary = true
 vision_enabled = false
 
@@ -171,8 +188,13 @@ position = Vector2(1150, 420)
 position = Vector2(880, 420)
 
 [node name="player" parent="." unique_id=809196411 instance=ExtResource("1_player")]
-position = Vector2(200, 510)
+position = Vector2(1628, -45)
 
 [node name="ui_reticle" parent="." unique_id=249582039 instance=ExtResource("4_reticle")]
 
 [node name="ui_weight" parent="." unique_id=1215397298 instance=ExtResource("5_weight")]
+
+[node name="tuile_test" type="TileMapLayer" parent="." unique_id=163073832]
+tile_map_data = PackedByteArray("AABRAP//AQACAAAAAABRAP7/AQACAAAAAABRAP3/AQACAAAAAABRAPz/AQACAAAAAABRAPv/AQACAAAAAABRAPr/AQACAAAAAABbAP//AQACAAAAAABbAP7/AQACAAAAAABbAP3/AQACAAAAAABbAPz/AQACAAAAAABbAPv/AQACAAAAAABbAPr/AQACAAAAAABcAPr/AQACAAAAAABcAPv/AQACAAAAAABcAPz/AQACAAAAAABcAP3/AQACAAAAAABcAP7/AQACAAAAAABcAP//AQACAAAAAABnAP//AQABAAAAAABnAP7/AQABAAAAAABnAP3/AQABAAAAAABnAPz/AQABAAAAAABnAPv/AQABAAAAAABnAPr/AQABAAAAAAA=")
+tile_set = ExtResource("6_8utli")
+physics_quadrant_size = 1

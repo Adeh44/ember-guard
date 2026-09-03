@@ -1,0 +1,34 @@
+[gd_resource type="TileSet" format=3 uid="uid://dy01afbp68dyf"]
+
+[ext_resource type="Texture2D" uid="uid://5sduogbvyp44" path="res://tilesets/tileset_base.png" id="1_frot7"]
+[ext_resource type="Texture2D" uid="uid://bcfp3lqosy8ja" path="res://assets/murs_types.png" id="2_frot7"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6e24c"]
+texture = ExtResource("1_frot7")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+2:0/0/custom_data_0 = "moyen"
+3:0/0 = 0
+3:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+3:0/0/custom_data_0 = "epais"
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i5rdr"]
+texture = ExtResource("2_frot7")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+0:0/0/custom_data_0 = "fin"
+1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+1:0/0/custom_data_0 = "moyen"
+2:0/0 = 0
+2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+2:0/0/custom_data_0 = "epais"
+
+[resource]
+physics_layer_0/collision_layer = 3
+custom_data_layer_0/name = "wall_type"
+custom_data_layer_0/type = 4
+sources/0 = SubResource("TileSetAtlasSource_6e24c")
+sources/1 = SubResource("TileSetAtlasSource_i5rdr")
