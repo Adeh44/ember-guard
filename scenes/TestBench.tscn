@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://boo8qux3gcb61"]
 
 [ext_resource type="PackedScene" uid="uid://cjn72anju4yoq" path="res://scenes/player.tscn" id="1_player"]
+[ext_resource type="Script" uid="uid://bcp8lhp6vq2gg" path="res://scenes/test_bench.gd" id="1_rq06i"]
 [ext_resource type="PackedScene" uid="uid://86r3dcro47u7" path="res://scenes/enemy.tscn" id="2_enemy"]
 [ext_resource type="PackedScene" path="res://scenes/wall.tscn" id="3_wall"]
 [ext_resource type="PackedScene" uid="uid://dqk13jbfta2sc" path="res://scenes/ui_reticle.tscn" id="4_reticle"]
@@ -8,14 +9,15 @@
 [ext_resource type="TileSet" uid="uid://dy01afbp68dyf" path="res://tilesets/obstacles.tres" id="6_8utli"]
 
 [node name="TestBench" type="Node2D" unique_id=1215302758]
+script = ExtResource("1_rq06i")
 metadata/_edit_vertical_guides_ = [1300.0, 1449.0, 1650.0]
 
 [node name="fond" type="ColorRect" parent="." unique_id=2142810755]
 z_index = -10
-offset_left = -151.0
-offset_top = -181.0
-offset_right = 1349.0
-offset_bottom = 819.0
+offset_left = -2500.0
+offset_top = -2500.0
+offset_right = 2500.0
+offset_bottom = 2500.0
 mouse_filter = 2
 color = Color(0.11, 0.11, 0.13, 1)
 
@@ -198,3 +200,14 @@ position = Vector2(1628, -45)
 tile_map_data = PackedByteArray("AABRAP//AQACAAAAAABRAP7/AQACAAAAAABRAP3/AQACAAAAAABRAPz/AQACAAAAAABRAPv/AQACAAAAAABRAPr/AQACAAAAAABbAP//AQACAAAAAABbAP7/AQACAAAAAABbAP3/AQACAAAAAABbAPz/AQACAAAAAABbAPv/AQACAAAAAABbAPr/AQACAAAAAABcAPr/AQACAAAAAABcAPv/AQACAAAAAABcAPz/AQACAAAAAABcAP3/AQACAAAAAABcAP7/AQACAAAAAABcAP//AQACAAAAAABnAP//AQABAAAAAABnAP7/AQABAAAAAABnAP3/AQABAAAAAABnAPz/AQABAAAAAABnAPv/AQABAAAAAABnAPr/AQABAAAAAAA=")
 tile_set = ExtResource("6_8utli")
 physics_quadrant_size = 1
+
+[node name="test_spots" type="Node2D" parent="." unique_id=1552199687]
+
+[node name="spot_1_epais" type="Marker2D" parent="test_spots" unique_id=1903650440]
+position = Vector2(1276, -45)
+
+[node name="spot_2_double" type="Marker2D" parent="test_spots" unique_id=1323497476]
+position = Vector2(1436, -45)
+
+[node name="spot_3_moyen" type="Marker2D" parent="test_spots" unique_id=1714703706]
+position = Vector2(1628, -45)
