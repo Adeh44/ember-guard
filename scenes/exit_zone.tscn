@@ -9,6 +9,7 @@ size = Vector2(60, 20)
 load_path = "res://.godot/imported/icon.svg-56083ea2a1f1a4f1e49773bdc6d7826c.ctex"
 
 [node name="exit_zone" type="Area2D"]
+collision_layer = 0
 script = ExtResource("1_2n2ks")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

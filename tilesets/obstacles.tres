@@ -27,7 +27,7 @@ texture = ExtResource("2_frot7")
 2:0/0/custom_data_0 = "epais"
 
 [resource]
-physics_layer_0/collision_layer = 3
+physics_layer_0/collision_layer = 2
 custom_data_layer_0/name = "wall_type"
 custom_data_layer_0/type = 4
 sources/0 = SubResource("TileSetAtlasSource_6e24c")
