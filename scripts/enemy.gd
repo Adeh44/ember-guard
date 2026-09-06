@@ -34,11 +34,20 @@ var investigation_target = null
 # ========== MÉMOIRE DE POURSUITE ==========
 # L'état ALERT a une durée de vie : sans elle, une machine à états n'est
 # qu'un aiguillage, et un ennemi dont la cible est derrière un mur cherche
-# pour l'éternité. Le minuteur est le seul mécanisme qui TERMINE une recherche.
-@export var alert_duration_sight = 6.0   # Recherche après avoir VU le joueur
-@export var alert_duration_noise = 3.0   # Recherche après n'avoir fait que l'ENTENDRE
-var alert_timer = 0.0                    # Temps passé dans l'état ALERT
+# pour l'éternité. Les minuteurs sont le seul mécanisme qui TERMINE une recherche.
+#
+# Ils sont DEUX, et c'est le point important : les durées ci-dessous comptent une
+# FOUILLE SUR PLACE, jamais un budget de déplacement. Sinon un bruit lointain ne
+# produirait qu'un demi-tour et un bruit proche une vraie fouille — une règle que
+# le joueur ne peut pas apprendre. Le trajet a donc son propre plafond, qui n'est
+# qu'un garde-fou : aucun ennemi ne sait contourner un obstacle.
+@export var alert_duration_sight = 6.0   # Fouille sur place après avoir VU le joueur
+@export var alert_duration_noise = 3.0   # Fouille sur place après l'avoir seulement ENTENDU
+@export var alert_travel_max = 8.0       # Plafond du trajet vers le bruit
+var travel_timer = 0.0                   # Temps passé à marcher vers la cible
+var search_timer = 0.0                   # Temps passé à fouiller sur place
 var alert_from_sight = false             # L'alerte en cours vient-elle d'une vue ?
+var investigate_threshold = 10           # Distance (px) à laquelle il se considère arrivé
 
 # Coût de traversée par type de mur, en PIXELS de portée retirés.
 # Modèle soustractif (décision du 01/09) : chaque mur mange un montant fixe.
@@ -158,8 +167,9 @@ func _on_noise_detected(noise_pos: Vector2, intensity: float):
 		if debug_sound:
 			print(name, " : ENTENDU (reste %.1f px pour %.1f px, %d mur(s))" % [reste, distance_finale, murs_traverses])
 		investigation_target = noise_pos
-		# Un bruit neuf relance la recherche depuis zéro.
-		alert_timer = 0.0
+		# Un bruit neuf relance la recherche depuis zéro : trajet ET fouille.
+		travel_timer = 0.0
+		search_timer = 0.0
 		# Mais il ne RÉTROGRADE pas une alerte visuelle : on ne repasse en durée
 		# courte que si l'ennemi patrouillait tranquillement avant ce bruit.
 		# Un garde qui t'a vu de ses yeux ne redevient pas un garde qui a cru entendre.
@@ -190,23 +200,28 @@ func _investigate(delta):
 		current_state = State.PATROL
 		return
 
-	# Le minuteur court pendant TOUTE l'alerte, déplacement compris : le temps de
-	# trajet ne s'ajoute pas au délai, il se déduit dedans.
-	alert_timer += delta
-	var alert_limit = alert_duration_sight if alert_from_sight else alert_duration_noise
 	var distance = global_position.distance_to(investigation_target)
 
-	# Fin du délai : il abandonne, qu'il soit arrivé sur place ou bloqué contre un mur.
-	if alert_timer >= alert_limit:
-		print(name, " : abandon apres %.2f s (reste %.1f px)" % [alert_timer, distance])
-		investigation_target = null
-		current_state = State.PATROL
+	# ===== ARRIVÉ SUR PLACE : il fouille =====
+	# Seul endroit où le minuteur de fouille avance. Le joueur voit donc toujours
+	# la même durée de fouille, que le bruit ait été proche ou lointain.
+	if distance < investigate_threshold:
+		velocity = Vector2.ZERO
+		search_timer += delta
+		var search_limit = alert_duration_sight if alert_from_sight else alert_duration_noise
+		if search_timer >= search_limit:
+			print(name, " : rien trouve, abandon apres %.2f s de fouille" % search_timer)
+			investigation_target = null
+			current_state = State.PATROL
 		return
 
-	# Arrivé sur place : il s'arrête d'avancer, mais il reste en alerte et
-	# continue de chercher jusqu'au bout du délai.
-	if distance < 10:
-		velocity = Vector2.ZERO
+	# ===== EN ROUTE : le plafond de trajet court =====
+	# Garde-fou pur : il ne sert que si la cible est inatteignable.
+	travel_timer += delta
+	if travel_timer >= alert_travel_max:
+		print(name, " : abandon en route apres %.2f s (reste %.1f px)" % [travel_timer, distance])
+		investigation_target = null
+		current_state = State.PATROL
 		return
 
 	var direction = (investigation_target - global_position).normalized()
@@ -251,7 +266,8 @@ func _on_vision_body_exited(body):
 		# On fige la dernière position connue : l'ennemi ira LÀ, pas là où le
 		# joueur se trouve maintenant. C'est ce qui fait qu'un mur protège.
 		investigation_target = body.global_position
-		alert_timer = 0.0
+		travel_timer = 0.0
+		search_timer = 0.0
 		alert_from_sight = true
 		current_state = State.ALERT
 		print(name, " : Joueur perdu de vue -> je vais voir en ", investigation_target)
