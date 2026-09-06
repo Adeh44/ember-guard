@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://cjn72anju4yoq" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="Script" uid="uid://bcp8lhp6vq2gg" path="res://scripts/test_bench.gd" id="1_rq06i"]
 [ext_resource type="PackedScene" uid="uid://86r3dcro47u7" path="res://scenes/enemy.tscn" id="2_enemy"]
-[ext_resource type="PackedScene" path="res://scenes/wall.tscn" id="3_wall"]
+[ext_resource type="PackedScene" uid="uid://ct8ecn0e56008" path="res://scenes/wall.tscn" id="3_wall"]
 [ext_resource type="PackedScene" uid="uid://dqk13jbfta2sc" path="res://scenes/ui_reticle.tscn" id="4_reticle"]
 [ext_resource type="PackedScene" uid="uid://qisj5v7fmsm1" path="res://scenes/ui_weight.tscn" id="5_weight"]
 [ext_resource type="TileSet" uid="uid://dy01afbp68dyf" path="res://tilesets/obstacles.tres" id="6_8utli"]
@@ -211,3 +211,6 @@ position = Vector2(1436, -45)
 
 [node name="spot_3_moyen" type="Marker2D" parent="test_spots" unique_id=1714703706]
 position = Vector2(1628, -45)
+
+[node name="spot_4_poursuite" type="Marker2D" parent="test_spots" unique_id=1005873680]
+position = Vector2(960, 480)

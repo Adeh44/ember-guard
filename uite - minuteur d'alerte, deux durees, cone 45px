@@ -1,0 +1,138 @@
+[1mdiff --git a/scenes/TestBench.tscn b/scenes/TestBench.tscn[m
+[1mindex 227639e..d8fb946 100644[m
+[1m--- a/scenes/TestBench.tscn[m
+[1m+++ b/scenes/TestBench.tscn[m
+[36m@@ -3,7 +3,7 @@[m
+ [ext_resource type="PackedScene" uid="uid://cjn72anju4yoq" path="res://scenes/player.tscn" id="1_player"][m
+ [ext_resource type="Script" uid="uid://bcp8lhp6vq2gg" path="res://scripts/test_bench.gd" id="1_rq06i"][m
+ [ext_resource type="PackedScene" uid="uid://86r3dcro47u7" path="res://scenes/enemy.tscn" id="2_enemy"][m
+[31m-[ext_resource type="PackedScene" path="res://scenes/wall.tscn" id="3_wall"][m
+[32m+[m[32m[ext_resource type="PackedScene" uid="uid://ct8ecn0e56008" path="res://scenes/wall.tscn" id="3_wall"][m
+ [ext_resource type="PackedScene" uid="uid://dqk13jbfta2sc" path="res://scenes/ui_reticle.tscn" id="4_reticle"][m
+ [ext_resource type="PackedScene" uid="uid://qisj5v7fmsm1" path="res://scenes/ui_weight.tscn" id="5_weight"][m
+ [ext_resource type="TileSet" uid="uid://dy01afbp68dyf" path="res://tilesets/obstacles.tres" id="6_8utli"][m
+[36m@@ -211,3 +211,6 @@[m [mposition = Vector2(1436, -45)[m
+ [m
+ [node name="spot_3_moyen" type="Marker2D" parent="test_spots" unique_id=1714703706][m
+ position = Vector2(1628, -45)[m
+[32m+[m
+[32m+[m[32m[node name="spot_4_poursuite" type="Marker2D" parent="test_spots" unique_id=1005873680][m
+[32m+[m[32mposition = Vector2(960, 480)[m
+[1mdiff --git a/scenes/enemy.tscn b/scenes/enemy.tscn[m
+[1mindex bb1d10b..e1ca297 100644[m
+[1m--- a/scenes/enemy.tscn[m
+[1m+++ b/scenes/enemy.tscn[m
+[36m@@ -7,7 +7,7 @@[m
+ radius = 6.0[m
+ [m
+ [sub_resource type="CircleShape2D" id="CircleShape2D_4ra3w"][m
+[31m-radius = 21.0[m
+[32m+[m[32mradius = 45.0[m
+ [m
+ [node name="enemy" type="CharacterBody2D" unique_id=1625477592][m
+ collision_layer = 4[m
+[1mdiff --git a/scripts/enemy.gd b/scripts/enemy.gd[m
+[1mindex 5a2bcdf..f8622b1 100644[m
+[1m--- a/scripts/enemy.gd[m
+[1m+++ b/scripts/enemy.gd[m
+[36m@@ -31,6 +31,15 @@[m [mvar player_in_vision = false[m
+ [m
+ var investigation_target = null[m
+ [m
+[32m+[m[32m# ========== MÉMOIRE DE POURSUITE ==========[m
+[32m+[m[32m# L'état ALERT a une durée de vie : sans elle, une machine à états n'est[m
+[32m+[m[32m# qu'un aiguillage, et un ennemi dont la cible est derrière un mur cherche[m
+[32m+[m[32m# pour l'éternité. Le minuteur est le seul mécanisme qui TERMINE une recherche.[m
+[32m+[m[32m@export var alert_duration_sight = 6.0   # Recherche après avoir VU le joueur[m
+[32m+[m[32m@export var alert_duration_noise = 3.0   # Recherche après n'avoir fait que l'ENTENDRE[m
+[32m+[m[32mvar alert_timer = 0.0                    # Temps passé dans l'état ALERT[m
+[32m+[m[32mvar alert_from_sight = false             # L'alerte en cours vient-elle d'une vue ?[m
+[32m+[m
+ # Coût de traversée par type de mur, en PIXELS de portée retirés.[m
+ # Modèle soustractif (décision du 01/09) : chaque mur mange un montant fixe.[m
+ # L'empilement est linéaire : 2 tuiles épaisses = -150, lisible en level design.[m
+[36m@@ -149,20 +158,27 @@[m [mfunc _on_noise_detected(noise_pos: Vector2, intensity: float):[m
+ 		if debug_sound:[m
+ 			print(name, " : ENTENDU (reste %.1f px pour %.1f px, %d mur(s))" % [reste, distance_finale, murs_traverses])[m
+ 		investigation_target = noise_pos[m
+[32m+[m		[32m# Un bruit neuf relance la recherche depuis zéro.[m
+[32m+[m		[32malert_timer = 0.0[m
+[32m+[m		[32m# Mais il ne RÉTROGRADE pas une alerte visuelle : on ne repasse en durée[m
+[32m+[m		[32m# courte que si l'ennemi patrouillait tranquillement avant ce bruit.[m
+[32m+[m		[32m# Un garde qui t'a vu de ses yeux ne redevient pas un garde qui a cru entendre.[m
+[32m+[m		[32mif current_state == State.PATROL:[m
+[32m+[m			[32malert_from_sight = false[m
+ 		current_state = State.ALERT[m
+ 	elif debug_sound:[m
+ 		print(name, " : étouffé (reste %.1f px, il en fallait %.1f, %d mur(s))" % [reste, distance_finale, murs_traverses])[m
+ [m
+[31m-func _physics_process(_delta):[m
+[32m+[m[32mfunc _physics_process(delta):[m
+ 	match current_state:[m
+ 		State.PATROL:[m
+ 			_patrol()[m
+ 		State.ALERT:[m
+[31m-			_investigate()[m
+[32m+[m			[32m_investigate(delta)[m
+ 		State.CHASE:[m
+ 			_chase_player()[m
+ [m
+[31m-func _investigate():[m
+[32m+[m[32mfunc _investigate(delta):[m
+ 	if investigation_target == null:[m
+ 		current_state = State.PATROL[m
+ 		return[m
+[36m@@ -174,17 +190,28 @@[m [mfunc _investigate():[m
+ 		current_state = State.PATROL[m
+ 		return[m
+ [m
+[31m-	var direction = (investigation_target - global_position).normalized()[m
+[31m-[m
+[31m-	velocity = direction * speed[m
+[31m-	move_and_slide()[m
+[31m-[m
+[31m-	# Arrivé sur place sans rien trouver : retour en patrouille[m
+[32m+[m	[32m# Le minuteur court pendant TOUTE l'alerte, déplacement compris : le temps de[m
+[32m+[m	[32m# trajet ne s'ajoute pas au délai, il se déduit dedans.[m
+[32m+[m	[32malert_timer += delta[m
+[32m+[m	[32mvar alert_limit = alert_duration_sight if alert_from_sight else alert_duration_noise[m
+ 	var distance = global_position.distance_to(investigation_target)[m
+[31m-	if distance < 10:[m
+[31m-		print(name, " : Rien trouvé, retour patrouille")[m
+[32m+[m
+[32m+[m	[32m# Fin du délai : il abandonne, qu'il soit arrivé sur place ou bloqué contre un mur.[m
+[32m+[m	[32mif alert_timer >= alert_limit:[m
+[32m+[m		[32mprint(name, " : abandon apres %.2f s (reste %.1f px)" % [alert_timer, distance])[m
+ 		investigation_target = null[m
+ 		current_state = State.PATROL[m
+[32m+[m		[32mreturn[m
+[32m+[m
+[32m+[m	[32m# Arrivé sur place : il s'arrête d'avancer, mais il reste en alerte et[m
+[32m+[m	[32m# continue de chercher jusqu'au bout du délai.[m
+[32m+[m	[32mif distance < 10:[m
+[32m+[m		[32mvelocity = Vector2.ZERO[m
+[32m+[m		[32mreturn[m
+[32m+[m
+[32m+[m	[32mvar direction = (investigation_target - global_position).normalized()[m
+[32m+[m	[32mvelocity = direction * speed[m
+[32m+[m	[32mmove_and_slide()[m
+ [m
+ func _patrol():[m
+ 	if is_stationary:[m
+[36m@@ -221,8 +248,14 @@[m [mfunc _on_vision_body_entered(body):[m
+ func _on_vision_body_exited(body):[m
+ 	if body.name == "player":[m
+ 		player_in_vision = false[m
+[31m-		current_state = State.PATROL[m
+[31m-		print(name, " : Joueur perdu, retour patrouille")[m
+[32m+[m		[32m# On fige la dernière position connue : l'ennemi ira LÀ, pas là où le[m
+[32m+[m		[32m# joueur se trouve maintenant. C'est ce qui fait qu'un mur protège.[m
+[32m+[m		[32minvestigation_target = body.global_position[m
+[32m+[m		[32malert_timer = 0.0[m
+[32m+[m		[32malert_from_sight = true[m
+[32m+[m		[32mcurrent_state = State.ALERT[m
+[32m+[m		[32mprint(name, " : Joueur perdu de vue -> je vais voir en ", investigation_target)[m
+[32m+[m
+ [m
+ func take_damage(amount, is_critical = false):[m
+ 	hp -= amount[m

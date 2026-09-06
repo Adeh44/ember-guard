@@ -31,6 +31,15 @@ var player_in_vision = false
 
 var investigation_target = null
 
+# ========== MÉMOIRE DE POURSUITE ==========
+# L'état ALERT a une durée de vie : sans elle, une machine à états n'est
+# qu'un aiguillage, et un ennemi dont la cible est derrière un mur cherche
+# pour l'éternité. Le minuteur est le seul mécanisme qui TERMINE une recherche.
+@export var alert_duration_sight = 6.0   # Recherche après avoir VU le joueur
+@export var alert_duration_noise = 3.0   # Recherche après n'avoir fait que l'ENTENDRE
+var alert_timer = 0.0                    # Temps passé dans l'état ALERT
+var alert_from_sight = false             # L'alerte en cours vient-elle d'une vue ?
+
 # Coût de traversée par type de mur, en PIXELS de portée retirés.
 # Modèle soustractif (décision du 01/09) : chaque mur mange un montant fixe.
 # L'empilement est linéaire : 2 tuiles épaisses = -150, lisible en level design.
@@ -149,20 +158,27 @@ func _on_noise_detected(noise_pos: Vector2, intensity: float):
 		if debug_sound:
 			print(name, " : ENTENDU (reste %.1f px pour %.1f px, %d mur(s))" % [reste, distance_finale, murs_traverses])
 		investigation_target = noise_pos
+		# Un bruit neuf relance la recherche depuis zéro.
+		alert_timer = 0.0
+		# Mais il ne RÉTROGRADE pas une alerte visuelle : on ne repasse en durée
+		# courte que si l'ennemi patrouillait tranquillement avant ce bruit.
+		# Un garde qui t'a vu de ses yeux ne redevient pas un garde qui a cru entendre.
+		if current_state == State.PATROL:
+			alert_from_sight = false
 		current_state = State.ALERT
 	elif debug_sound:
 		print(name, " : étouffé (reste %.1f px, il en fallait %.1f, %d mur(s))" % [reste, distance_finale, murs_traverses])
 
-func _physics_process(_delta):
+func _physics_process(delta):
 	match current_state:
 		State.PATROL:
 			_patrol()
 		State.ALERT:
-			_investigate()
+			_investigate(delta)
 		State.CHASE:
 			_chase_player()
 
-func _investigate():
+func _investigate(delta):
 	if investigation_target == null:
 		current_state = State.PATROL
 		return
@@ -174,17 +190,28 @@ func _investigate():
 		current_state = State.PATROL
 		return
 
-	var direction = (investigation_target - global_position).normalized()
-
-	velocity = direction * speed
-	move_and_slide()
-
-	# Arrivé sur place sans rien trouver : retour en patrouille
+	# Le minuteur court pendant TOUTE l'alerte, déplacement compris : le temps de
+	# trajet ne s'ajoute pas au délai, il se déduit dedans.
+	alert_timer += delta
+	var alert_limit = alert_duration_sight if alert_from_sight else alert_duration_noise
 	var distance = global_position.distance_to(investigation_target)
-	if distance < 10:
-		print(name, " : Rien trouvé, retour patrouille")
+
+	# Fin du délai : il abandonne, qu'il soit arrivé sur place ou bloqué contre un mur.
+	if alert_timer >= alert_limit:
+		print(name, " : abandon apres %.2f s (reste %.1f px)" % [alert_timer, distance])
 		investigation_target = null
 		current_state = State.PATROL
+		return
+
+	# Arrivé sur place : il s'arrête d'avancer, mais il reste en alerte et
+	# continue de chercher jusqu'au bout du délai.
+	if distance < 10:
+		velocity = Vector2.ZERO
+		return
+
+	var direction = (investigation_target - global_position).normalized()
+	velocity = direction * speed
+	move_and_slide()
 
 func _patrol():
 	if is_stationary:
@@ -221,8 +248,14 @@ func _on_vision_body_entered(body):
 func _on_vision_body_exited(body):
 	if body.name == "player":
 		player_in_vision = false
-		current_state = State.PATROL
-		print(name, " : Joueur perdu, retour patrouille")
+		# On fige la dernière position connue : l'ennemi ira LÀ, pas là où le
+		# joueur se trouve maintenant. C'est ce qui fait qu'un mur protège.
+		investigation_target = body.global_position
+		alert_timer = 0.0
+		alert_from_sight = true
+		current_state = State.ALERT
+		print(name, " : Joueur perdu de vue -> je vais voir en ", investigation_target)
+
 
 func take_damage(amount, is_critical = false):
 	hp -= amount
