@@ -6,9 +6,6 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_md0e3"]
 radius = 6.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_4ra3w"]
-radius = 45.0
-
 [node name="enemy" type="CharacterBody2D" unique_id=1625477592]
 collision_layer = 4
 collision_mask = 7
@@ -21,9 +18,3 @@ hframes = 6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=820483253]
 shape = SubResource("CircleShape2D_md0e3")
-
-[node name="vision_cone" type="Area2D" parent="." unique_id=1650762705]
-collision_layer = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="vision_cone" unique_id=704287620]
-shape = SubResource("CircleShape2D_4ra3w")
