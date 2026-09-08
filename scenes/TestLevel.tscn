@@ -34,7 +34,7 @@ tile_set = ExtResource("2_6e24c")
 physics_quadrant_size = 1
 
 [node name="player" parent="." unique_id=125559712 instance=ExtResource("2_1fpmp")]
-position = Vector2(440, 247)
+position = Vector2(454, 206)
 
 [node name="enemy3" parent="." unique_id=1821416048 instance=ExtResource("4_i6x8u")]
 position = Vector2(256, 37)

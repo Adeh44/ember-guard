@@ -12,6 +12,13 @@ extends CharacterBody2D
 @export var speed = 32
 
 # ========== IA PATROUILLE ==========
+# Chemin vers le nœud qui porte les waypoints de CET ennemi.
+# On stocke un CHEMIN, pas le nœud : Godot ne garantit pas qu'une référence
+# de nœud exportée soit déjà résolue quand _ready() s'exécute. On la résout
+# donc soi-même, au moment où on en a besoin — c'est nous qui décidons.
+# Laissé vide, l'ennemi retombe sur le groupe "waypoints" global.
+@export_node_path("Node2D") var patrol_waypoints: NodePath
+
 var waypoints = []
 var current_waypoint_index = 0
 var patrol_threshold = 5   # Distance (px) à laquelle un waypoint est "atteint"
@@ -67,14 +74,20 @@ const LAYER_MURS = 2        # Le raycast ne cherche QUE les murs (layer 2)
 @export var vision_enabled = true   # false = cône de vision coupé (test sonore pur)
 
 func _ready():
-	var waypoints_group = get_tree().get_first_node_in_group("waypoints")
+	# Circuit personnel d'abord, groupe global ensuite.
+	# L'ordre compte : le cas particulier gagne, le repli rattrape.
+	var waypoints_group = null
+	if not patrol_waypoints.is_empty():
+		waypoints_group = get_node_or_null(patrol_waypoints)
+	if waypoints_group == null:
+		waypoints_group = get_tree().get_first_node_in_group("waypoints")
 	if waypoints_group == null:
 		waypoints_group = get_node_or_null("/root/TestLevel/waypoints_group")
 
 	if waypoints_group != null:
 		for child in waypoints_group.get_children():
 			waypoints.append(child.global_position)
-		print(name, " : ", waypoints.size(), " waypoints trouvés")
+		print(name, " : ", waypoints.size(), " waypoints trouvés (", waypoints_group.name, ")")
 	else:
 		print(name, " : ERREUR - Aucun groupe waypoints trouvé !")
 

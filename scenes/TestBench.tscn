@@ -175,6 +175,67 @@ position = Vector2(880, 240)
 [node name="spawn_D_zone_degagee" type="Marker2D" parent="ZoneD_Patrouille" unique_id=373546685]
 position = Vector2(960, 480)
 
+[node name="ZoneE_Vision" type="Node2D" parent="." unique_id=700000001]
+
+[node name="mur_V" parent="ZoneE_Vision" unique_id=700000002 instance=ExtResource("3_wall")]
+position = Vector2(416, 820)
+size = Vector2(8, 40)
+
+[node name="enemy_V1" parent="ZoneE_Vision" unique_id=700000003 instance=ExtResource("2_enemy")]
+position = Vector2(400, 800)
+speed = 0
+is_stationary = true
+
+[node name="ZoneF_CouloirS" type="Node2D" parent="." unique_id=700000010]
+
+[node name="mur_S_haut_gauche" parent="ZoneF_CouloirS" unique_id=700000011 instance=ExtResource("3_wall")]
+position = Vector2(685, 780)
+size = Vector2(190, 8)
+
+[node name="mur_S_bas_gauche" parent="ZoneF_CouloirS" unique_id=700000012 instance=ExtResource("3_wall")]
+position = Vector2(665, 820)
+size = Vector2(150, 8)
+
+[node name="mur_S_vertical_gauche" parent="ZoneF_CouloirS" unique_id=700000013 instance=ExtResource("3_wall")]
+position = Vector2(740, 900)
+size = Vector2(8, 160)
+
+[node name="mur_S_vertical_droit" parent="ZoneF_CouloirS" unique_id=700000014 instance=ExtResource("3_wall")]
+position = Vector2(780, 860)
+size = Vector2(8, 160)
+
+[node name="mur_S_haut_droit" parent="ZoneF_CouloirS" unique_id=700000015 instance=ExtResource("3_wall")]
+position = Vector2(855, 940)
+size = Vector2(150, 8)
+
+[node name="mur_S_bas_droit" parent="ZoneF_CouloirS" unique_id=700000016 instance=ExtResource("3_wall")]
+position = Vector2(835, 980)
+size = Vector2(190, 8)
+
+[node name="waypoints_S" type="Node2D" parent="ZoneF_CouloirS" unique_id=700000017]
+
+[node name="wp_S1" type="Marker2D" parent="ZoneF_CouloirS/waypoints_S" unique_id=700000018]
+position = Vector2(620, 800)
+
+[node name="wp_S2" type="Marker2D" parent="ZoneF_CouloirS/waypoints_S" unique_id=700000019]
+position = Vector2(760, 800)
+
+[node name="wp_S3" type="Marker2D" parent="ZoneF_CouloirS/waypoints_S" unique_id=700000020]
+position = Vector2(760, 960)
+
+[node name="wp_S4" type="Marker2D" parent="ZoneF_CouloirS/waypoints_S" unique_id=700000021]
+position = Vector2(900, 960)
+
+[node name="wp_S5" type="Marker2D" parent="ZoneF_CouloirS/waypoints_S" unique_id=700000022]
+position = Vector2(760, 960)
+
+[node name="wp_S6" type="Marker2D" parent="ZoneF_CouloirS/waypoints_S" unique_id=700000023]
+position = Vector2(760, 800)
+
+[node name="enemy_S1" parent="ZoneF_CouloirS" unique_id=700000024 instance=ExtResource("2_enemy")]
+position = Vector2(620, 800)
+patrol_waypoints = NodePath("../waypoints_S")
+
 [node name="waypoints_group" type="Node2D" parent="." unique_id=1551308777 groups=["waypoints"]]
 
 [node name="wp_1" type="Marker2D" parent="waypoints_group" unique_id=1502885246]
@@ -214,3 +275,15 @@ position = Vector2(1628, -45)
 
 [node name="spot_4_poursuite" type="Marker2D" parent="test_spots" unique_id=1005873680]
 position = Vector2(960, 480)
+
+[node name="spot_5_vue_degagee" type="Marker2D" parent="test_spots" unique_id=700000030]
+position = Vector2(376, 832)
+
+[node name="spot_6_derriere_mur" type="Marker2D" parent="test_spots" unique_id=700000031]
+position = Vector2(424, 832)
+
+[node name="spot_7_dos" type="Marker2D" parent="test_spots" unique_id=700000032]
+position = Vector2(400, 760)
+
+[node name="spot_8_couloir_S" type="Marker2D" parent="test_spots" unique_id=700000033]
+position = Vector2(800, 830)
