@@ -171,6 +171,7 @@ size = Vector2(16, 120)
 
 [node name="enemy_D1_patrouille" parent="ZoneD_Patrouille" unique_id=1691529230 instance=ExtResource("2_enemy")]
 position = Vector2(880, 240)
+can_scan = true
 
 [node name="spawn_D_zone_degagee" type="Marker2D" parent="ZoneD_Patrouille" unique_id=373546685]
 position = Vector2(960, 480)

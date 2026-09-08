@@ -32,11 +32,40 @@ var current_state = State.PATROL
 # Une Area2D ne sait dire que "il est entré" / "il est sorti" de sa forme :
 # elle ne peut pas dire "un mur me le cache". Un test par frame, si.
 var player = null
-@export var vision_range = 45.0   # Portée de vision en px
+
+# Deux formes de cône : calme, ou éveillé.
+# Quand il se concentre, il voit moins large et plus loin.
+@export var vision_angle_patrol = 90.0   # Ouverture en degrés, en ronde
+@export var vision_range_patrol = 45.0   # Portée en px, en ronde
+@export var vision_angle_alert = 50.0    # Ouverture en alerte et en poursuite
+@export var vision_range_alert = 70.0    # Portée en alerte et en poursuite
+
+# Orientation d'un ennemi qui ne se déplace jamais. Ceux qui bougent
+# regardent là où ils vont, ils n'en ont pas besoin.
+@export var facing_start = Vector2.DOWN
+
+# Forme du cône à cette frame, remplie par _update_vision_shape().
+# Toute la logique de forme vit dans cette seule fonction.
+var vision_angle = 90.0
+var vision_range = 45.0
+
+var facing_direction = Vector2.DOWN   # Direction du regard
 
 # Pourquoi le joueur n'est PAS vu. Ne sert qu'aux logs de test.
 # Un verdict sans son mécanisme, c'est ce qui nous a piégés deux fois.
 var vision_fail_reason = ""
+
+# ========== BALAYAGE PENDANT LA FOUILLE ==========
+# Réservé aux ennemis entraînés. Un rôdeur ne balaie pas du regard, un garde si.
+@export var can_scan = false
+@export var scan_half_angle = 60.0   # Amplitude de part et d'autre de l'axe, en degrés
+@export var scan_period = 4.0        # Durée d'un aller-retour complet, en secondes
+var scan_timer = 0.0
+var scan_base_direction = Vector2.DOWN   # Axe figé à l'arrivée sur place
+
+# Affichage du cône à l'écran. Outil de développement uniquement :
+# à repasser à false avant la v1.0, comme les print() de debug.
+@export var debug_draw_vision = true
 
 # ========== DÉTECTION SONORE ==========
 @export var sound_detection_range = 105.0   # Portée d'un bruit d'intensité 100
@@ -96,6 +125,7 @@ func _ready():
 	else:
 		print(name, " : ERREUR - Aucun groupe waypoints trouvé !")
 
+	facing_direction = facing_start
 	player = get_tree().get_first_node_in_group("player")
 	SoundManager.noise_emitted.connect(_on_noise_detected)
 
@@ -196,7 +226,12 @@ func _physics_process(delta):
 	# Une seule source de vérité pour la vision, évaluée à chaque frame.
 	# On la compare à l'état CHASE, qui EST la mémoire de la frame d'avant :
 	# on n'y entre que par la vue, on n'en sort que par sa perte.
+	_update_vision_shape()
 	var sees_player = _can_see_player()
+
+	# Le cône bouge à chaque frame : il faut redemander le dessin.
+	if debug_draw_vision:
+		queue_redraw()
 
 	if sees_player:
 		if current_state != State.CHASE:
@@ -240,7 +275,14 @@ func _investigate(delta):
 	# la même durée de fouille, que le bruit ait été proche ou lointain.
 	if distance < investigate_threshold:
 		velocity = Vector2.ZERO
+		if search_timer == 0.0:
+			# Première frame sur place : on fige l'axe du balayage sur la
+			# direction d'arrivée, donc vers le point qu'il vient fouiller.
+			scan_base_direction = facing_direction
+			scan_timer = 0.0
 		search_timer += delta
+		if can_scan:
+			_scan(delta)
 		var search_limit = alert_duration_sight if alert_from_sight else alert_duration_noise
 		if search_timer >= search_limit:
 			print(name, " : rien trouve, abandon apres %.2f s de fouille" % search_timer)
@@ -258,17 +300,21 @@ func _investigate(delta):
 		return
 
 	var direction = (investigation_target - global_position).normalized()
+	facing_direction = direction
 	velocity = direction * speed
 	move_and_slide()
 
 func _patrol():
 	if is_stationary:
+		# Un garde en faction reprend l'orientation de son poste.
+		facing_direction = facing_start
 		return
 	if waypoints.size() == 0:
 		return
 
 	var target_pos = waypoints[current_waypoint_index]
 	var direction = (target_pos - global_position).normalized()
+	facing_direction = direction
 	velocity = direction * speed
 	move_and_slide()
 
@@ -284,8 +330,59 @@ func _chase_player():
 
 	# En poursuite, l'ennemi court 30% plus vite que sa patrouille
 	var direction = (player.global_position - global_position).normalized()
+	facing_direction = direction
 	velocity = direction * (speed * 1.3)
 	move_and_slide()
+
+func _scan(delta):
+	# Va-et-vient régulier autour de l'axe figé à l'arrivée.
+	# Sinusoïde du temps : reproductible, donc mesurable. Un tirage au hasard
+	# rendrait toute prédiction chiffrée impossible.
+	scan_timer += delta
+	var angle = deg_to_rad(scan_half_angle) * sin(TAU * scan_timer / scan_period)
+	facing_direction = scan_base_direction.rotated(angle)
+
+func _draw():
+	# Dessine le cône réellement vu, murs compris. On lance un rayon par
+	# tranche : chaque rayon s'arrête au premier mur, donc le polygone épouse
+	# les obstacles au lieu de les traverser.
+	# _draw() travaille en coordonnées LOCALES — d'où les to_local().
+	if not debug_draw_vision or not vision_enabled:
+		return
+
+	var espace = get_world_2d().direct_space_state
+	var demi = deg_to_rad(vision_angle / 2.0)
+	var axe = facing_direction.angle()
+	var tranches = 24
+
+	var points = PackedVector2Array()
+	points.append(Vector2.ZERO)
+	for i in range(tranches + 1):
+		var a = axe - demi + (2.0 * demi) * i / float(tranches)
+		var bout = global_position + Vector2.RIGHT.rotated(a) * vision_range
+		var requete = PhysicsRayQueryParameters2D.create(global_position, bout)
+		requete.collision_mask = LAYER_MURS
+		requete.collide_with_areas = false
+		var impact = espace.intersect_ray(requete)
+		if impact.is_empty():
+			points.append(to_local(bout))
+		else:
+			points.append(to_local(impact.position))
+
+	# Jaune en ronde, rouge dès qu'il est éveillé.
+	var couleur = Color(1.0, 0.9, 0.2, 0.16)
+	if current_state != State.PATROL:
+		couleur = Color(1.0, 0.25, 0.2, 0.22)
+	draw_colored_polygon(points, couleur)
+
+func _update_vision_shape():
+	# Seule fonction qui décide de la forme du cône.
+	if current_state == State.PATROL:
+		vision_angle = vision_angle_patrol
+		vision_range = vision_range_patrol
+	else:
+		vision_angle = vision_angle_alert
+		vision_range = vision_range_alert
 
 func _can_see_player() -> bool:
 	if not vision_enabled:
@@ -295,13 +392,24 @@ func _can_see_player() -> bool:
 		vision_fail_reason = "aucun joueur"
 		return false
 
+	var to_player = player.global_position - global_position
+
 	# 1) La portée. Test le moins cher, donc en premier.
-	var distance = global_position.distance_to(player.global_position)
+	var distance = to_player.length()
 	if distance > vision_range:
 		vision_fail_reason = "hors de portee (%.1f px pour %.1f)" % [distance, vision_range]
 		return false
 
-	# 2) Un mur entre nous ? Même outil que la propagation sonore : un rayon
+	# 2) L'angle. angle_to() donne l'écart entre deux directions en radians,
+	#    signé ; abs() enlève le signe, gauche ou droite revient au même.
+	#    On compare à la MOITIÉ de l'ouverture : un cône de 90° s'étend de
+	#    45° de chaque côté de l'axe du regard.
+	var ecart = rad_to_deg(abs(facing_direction.angle_to(to_player)))
+	if ecart > vision_angle / 2.0:
+		vision_fail_reason = "hors du cone (%.1f deg pour %.1f)" % [ecart, vision_angle / 2.0]
+		return false
+
+	# 3) Un mur entre nous ? Même outil que la propagation sonore : un rayon
 	#    lancé par code, qui ne regarde que la couche des murs. Ici on ne veut
 	#    pas savoir QUEL mur — juste s'il y en a un. Donc pas de boucle.
 	var espace = get_world_2d().direct_space_state
