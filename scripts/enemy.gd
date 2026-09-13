@@ -35,10 +35,17 @@ var player = null
 
 # Deux formes de cône : calme, ou éveillé.
 # Quand il se concentre, il voit moins large et plus loin.
-@export var vision_angle_patrol = 90.0   # Ouverture en degrés, en ronde
-@export var vision_range_patrol = 45.0   # Portée en px, en ronde
-@export var vision_angle_alert = 50.0    # Ouverture en alerte et en poursuite
-@export var vision_range_alert = 70.0    # Portée en alerte et en poursuite
+#
+# Réglées au ressenti le 13/09. La portée d'alerte (120) dépasse volontairement
+# la portée d'écoute d'un joueur en marche normale (84 px) : dans la réalité on
+# voit quelqu'un bien avant de l'entendre, et c'est ce qui rend le CQB tendu —
+# un ennemi proche qui regarde vers toi te voit tout de suite, un ennemi lointain
+# s'observe sans risque. Le sonore reprend la main derrière les murs, et le
+# reprendra la nuit et dans les ombres.
+@export var vision_angle_patrol = 180.0   # Ouverture en degrés, en ronde
+@export var vision_range_patrol = 90.0    # Portée en px, en ronde
+@export var vision_angle_alert = 40.0     # Ouverture en alerte et en poursuite
+@export var vision_range_alert = 120.0    # Portée en alerte et en poursuite
 
 # Orientation d'un ennemi qui ne se déplace jamais. Ceux qui bougent
 # regardent là où ils vont, ils n'en ont pas besoin.
@@ -46,8 +53,8 @@ var player = null
 
 # Forme du cône à cette frame, remplie par _update_vision_shape().
 # Toute la logique de forme vit dans cette seule fonction.
-var vision_angle = 90.0
-var vision_range = 45.0
+var vision_angle = 180.0
+var vision_range = 90.0
 
 var facing_direction = Vector2.DOWN   # Direction du regard
 
