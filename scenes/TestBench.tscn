@@ -9,21 +9,22 @@
 [ext_resource type="TileSet" uid="uid://dy01afbp68dyf" path="res://tilesets/obstacles.tres" id="6_8utli"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_cf81r"]
-vertices = PackedVector2Array(1033, 400, 1222.75, 580.5703, 803.5078, 563.4219, 997, 400, 1213.2266, 173.21094, 1033, 260, 823.5, 181.78906, 997, 260)
-polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 1, 0, 5), PackedInt32Array(6, 4, 5, 7), PackedInt32Array(3, 2, 6, 7)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(814, 172, 1223, 163, 1233, 591, 793, 573)])
+vertices = PackedVector2Array(1695, 32.929688, 1267.1094, 30.0625, 1322, 10, 1446, 10, 1286, 10, 1695, -120.953125, 1674, 10, 1674, -106, 1268.8828, -119.03906, 1638, -106, 1286, -106, 1638, 10, 1498, 10, 1498, -106, 1446, -106, 1322, -106, 1033, 400, 1222.75, 580.5703, 803.5078, 563.4219, 997, 400, 1213.2266, 173.21094, 1033, 260, 823.5, 181.78906, 997, 260, 940, 954, 958.0703, 748, 959.9297, 1012, 940, 966, 940, 926, 940, 994, 565.21875, 1012, 730, 994, 794, 926, 794, 770, 790, 770, 790, 766, 766, 950, 770, 950, 770, 954, 754, 966, 754, 810, 750, 810, 750, 806, 766, 794, 580, 834, 726, 834, 726, 990, 730, 990, 570.78906, 748, 580, 806, 580, 766, 580, 794)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 2, 1), PackedInt32Array(5, 0, 6, 7), PackedInt32Array(8, 5, 7, 9), PackedInt32Array(4, 1, 8, 10), PackedInt32Array(9, 11, 12, 13), PackedInt32Array(8, 9, 13), PackedInt32Array(8, 13, 14), PackedInt32Array(11, 6, 0), PackedInt32Array(15, 10, 8), PackedInt32Array(15, 8, 14), PackedInt32Array(15, 14, 3, 2), PackedInt32Array(0, 3, 12), PackedInt32Array(0, 12, 11), PackedInt32Array(16, 17, 18, 19), PackedInt32Array(20, 17, 16, 21), PackedInt32Array(22, 20, 21, 23), PackedInt32Array(19, 18, 22, 23), PackedInt32Array(24, 25, 26, 27), PackedInt32Array(25, 24, 28), PackedInt32Array(29, 26, 30, 31), PackedInt32Array(28, 32, 33, 25), PackedInt32Array(33, 34, 35, 25), PackedInt32Array(36, 37, 38, 39), PackedInt32Array(40, 41, 42, 43), PackedInt32Array(44, 45, 46, 30), PackedInt32Array(46, 47, 31, 30), PackedInt32Array(44, 30, 48, 49), PackedInt32Array(48, 25, 35, 50), PackedInt32Array(26, 29, 27), PackedInt32Array(38, 24, 27, 39), PackedInt32Array(36, 39, 40, 43), PackedInt32Array(51, 43, 42, 49), PackedInt32Array(51, 49, 48), PackedInt32Array(48, 50, 51)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(814, 172, 1223, 163, 1233, 591, 793, 573), PackedVector2Array(561, 738, 968, 738, 970, 1022, 555, 1022), PackedVector2Array(1259, -129, 1705, -131, 1705, 43, 1257, 40)])
 source_geometry_mode = 1
 
 [node name="TestBench" type="Node2D" unique_id=1215302758]
 script = ExtResource("1_rq06i")
-metadata/_edit_vertical_guides_ = [1300.0, 1449.0, 1650.0]
+metadata/_edit_vertical_guides_ = [1260.0, 1449.0, 1705.0, 561.0, 970.0]
+metadata/_edit_horizontal_guides_ = [1021.0, 735.0, -130.0, 40.0]
 
 [node name="fond" type="ColorRect" parent="." unique_id=2142810755]
 z_index = -10
-offset_left = -2500.0
-offset_top = -2500.0
-offset_right = 2500.0
-offset_bottom = 2500.0
+offset_left = -2645.0
+offset_top = -2380.0
+offset_right = 2355.0
+offset_bottom = 2620.0
 mouse_filter = 2
 color = Color(0.11, 0.11, 0.13, 1)
 
@@ -193,7 +194,7 @@ position = Vector2(400, 800)
 speed = 0
 is_stationary = true
 
-[node name="ZoneF_CouloirS" type="Node2D" parent="." unique_id=700000010]
+[node name="ZoneF_CouloirS" type="Node2D" parent="." unique_id=700000010 groups=["navigation_polygon_source_geometry_group"]]
 
 [node name="mur_S_haut_gauche" parent="ZoneF_CouloirS" unique_id=700000011 instance=ExtResource("3_wall")]
 position = Vector2(685, 780)
@@ -264,7 +265,7 @@ position = Vector2(1628, -45)
 
 [node name="ui_weight" parent="." unique_id=1215397298 instance=ExtResource("5_weight")]
 
-[node name="tuile_test" type="TileMapLayer" parent="." unique_id=163073832]
+[node name="tuile_test" type="TileMapLayer" parent="." unique_id=163073832 groups=["navigation_polygon_source_geometry_group"]]
 tile_map_data = PackedByteArray("AABRAP//AQACAAAAAABRAP7/AQACAAAAAABRAP3/AQACAAAAAABRAPz/AQACAAAAAABRAPv/AQACAAAAAABRAPr/AQACAAAAAABbAP//AQACAAAAAABbAP7/AQACAAAAAABbAP3/AQACAAAAAABbAPz/AQACAAAAAABbAPv/AQACAAAAAABbAPr/AQACAAAAAABcAPr/AQACAAAAAABcAPv/AQACAAAAAABcAPz/AQACAAAAAABcAP3/AQACAAAAAABcAP7/AQACAAAAAABcAP//AQACAAAAAABnAP//AQABAAAAAABnAP7/AQABAAAAAABnAP3/AQABAAAAAABnAPz/AQABAAAAAABnAPv/AQABAAAAAABnAPr/AQABAAAAAAA=")
 tile_set = ExtResource("6_8utli")
 physics_quadrant_size = 1
