@@ -8,6 +8,12 @@
 [ext_resource type="PackedScene" uid="uid://qisj5v7fmsm1" path="res://scenes/ui_weight.tscn" id="5_weight"]
 [ext_resource type="TileSet" uid="uid://dy01afbp68dyf" path="res://tilesets/obstacles.tres" id="6_8utli"]
 
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_cf81r"]
+vertices = PackedVector2Array(1033, 400, 1222.75, 580.5703, 803.5078, 563.4219, 997, 400, 1213.2266, 173.21094, 1033, 260, 823.5, 181.78906, 997, 260)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 1, 0, 5), PackedInt32Array(6, 4, 5, 7), PackedInt32Array(3, 2, 6, 7)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(814, 172, 1223, 163, 1233, 591, 793, 573)])
+source_geometry_mode = 1
+
 [node name="TestBench" type="Node2D" unique_id=1215302758]
 script = ExtResource("1_rq06i")
 metadata/_edit_vertical_guides_ = [1300.0, 1449.0, 1650.0]
@@ -162,7 +168,7 @@ position = Vector2(610, 330)
 [node name="spawn_C_face_mur" type="Marker2D" parent="ZoneC_Piece" unique_id=589991751]
 position = Vector2(560, 330)
 
-[node name="ZoneD_Patrouille" type="Node2D" parent="." unique_id=1489847144]
+[node name="ZoneD_Patrouille" type="Node2D" parent="." unique_id=1489847144 groups=["navigation_polygon_source_geometry_group"]]
 
 [node name="mur_D_obstacle" parent="ZoneD_Patrouille" unique_id=804135312 instance=ExtResource("3_wall")]
 position = Vector2(1015, 330)
@@ -288,3 +294,6 @@ position = Vector2(400, 760)
 
 [node name="spot_8_couloir_S" type="Marker2D" parent="test_spots" unique_id=700000033]
 position = Vector2(800, 830)
+
+[node name="nav_banc" type="NavigationRegion2D" parent="." unique_id=2118289677]
+navigation_polygon = SubResource("NavigationPolygon_cf81r")
